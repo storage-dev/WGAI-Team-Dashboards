@@ -83,10 +83,22 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f7f9f
     <div id="overview">
       <div class="head">
         <h1>Good day, Jade 👋</h1>
-        <div class="date">Wed Jul 15, 2026 · 08:37 AM CT · tap a section to see what's inside</div>
+        <div class="date">Wed Jul 15, 2026 · 08:55 AM CT · tap a section to see what's inside</div>
       </div>
       
       <div class="tiles">
+      <button class="tile" onclick="openPanel('next')">
+        <div class="row1"><div class="icon">⚡</div><h3>Do this next</h3>
+        <span class="count">7</span></div>
+        <p>Your priorities right now, worked out from every message and alert — start at #1.</p>
+        <span class="open">View →</span>
+      </button>
+      <button class="tile zero" onclick="openPanel('inbox')">
+        <div class="row1"><div class="icon">🔔</div><h3>Notifications — other tools</h3>
+        <span class="count">0</span></div>
+        <p>Slack, email, Blotato and anything else connected, newest first.</p>
+        <span class="open">View →</span>
+      </button>
       <button class="tile alert" onclick="openPanel('alerts')">
         <div class="row1"><div class="icon">🚨</div><h3>System alerts</h3>
         <span class="count">46</span></div>
@@ -127,6 +139,73 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f7f9f
       Page refreshes automatically each morning.</div>
     </div>
     
+    <div class="panel" id="panel-next">
+      <button class="back" onclick="goHome()">← Back to overview</button>
+      <section class="card">
+        <div class="card-head"><span class="icon">⚡</span><h2>Do this next</h2>
+        <span class="count-pill">7</span></div>
+        <p class="sub">Your priorities right now, worked out from every message and alert — start at #1.</p>
+        <ul class="items">
+      <li class="item" data-key="act-n8n-SYS · Agent 01 — Personal Inbox v2">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top"><span class="badge brand">1</span> <a href="https://n8n.wadeglobal.ai/workflow/ZsLrcUM4UAG1myDg/executions/807703" target="_blank" rel="noopener">Fix or escalate automation &#x27;SYS · Agent 01 — Personal Inbox v2&#x27; — failed 9× in 48h</a></div>
+          <div class="item-body">Repeated failures mean a system is silently not doing its job.</div>
+        </div>
+      </li>
+      <li class="item" data-key="act-n8n-Agent Comms Hub">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top"><span class="badge brand">2</span> <a href="https://n8n.wadeglobal.ai/workflow/PCW3pD7IXxI5NOHC/executions/807571" target="_blank" rel="noopener">Fix or escalate automation &#x27;Agent Comms Hub&#x27; — failed 8× in 48h</a></div>
+          <div class="item-body">Repeated failures mean a system is silently not doing its job.</div>
+        </div>
+      </li>
+      <li class="item" data-key="act-n8n-ACS · Inbox 01 v3 — Draft &amp; Hold">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top"><span class="badge brand">3</span> <a href="https://n8n.wadeglobal.ai/workflow/iRrmCRkEZNk9CRpC/executions/806427" target="_blank" rel="noopener">Fix or escalate automation &#x27;ACS · Inbox 01 v3 — Draft &amp; Hold&#x27; — failed 5× in 48h</a></div>
+          <div class="item-body">Repeated failures mean a system is silently not doing its job.</div>
+        </div>
+      </li>
+      <li class="item" data-key="act-n8n-WGAI · CES 05 — GEO Audit">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top"><span class="badge brand">4</span> <a href="https://n8n.wadeglobal.ai/workflow/xBfHY486mjtzZWMR/executions/804989" target="_blank" rel="noopener">Fix or escalate automation &#x27;WGAI · CES 05 — GEO Audit&#x27; — failed 5× in 48h</a></div>
+          <div class="item-body">Repeated failures mean a system is silently not doing its job.</div>
+        </div>
+      </li>
+      <li class="item" data-key="act-n8n-WGAI · Event/Avery — Post-Call CRM Capture">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top"><span class="badge brand">5</span> <a href="https://n8n.wadeglobal.ai/workflow/hg3G1rRvzMTWoTuw/executions/806370" target="_blank" rel="noopener">Fix or escalate automation &#x27;WGAI · Event/Avery — Post-Call CRM Capture&#x27; — failed 3× in 48h</a></div>
+          <div class="item-body">Repeated failures mean a system is silently not doing its job.</div>
+        </div>
+      </li>
+      <li class="item" data-key="act-msg-KUAJ8a6Cgn8KwdWKXhry">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top"><span class="badge brand">6</span> <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/conversations/conversations/KUAJ8a6Cgn8KwdWKXhry" target="_blank" rel="noopener">Reply to (•••) •••-••97 (SMS, 2 unread)</a></div>
+          <div class="item-body">Waiting 8d ago — WadeGlobal AI.</div>
+        </div>
+      </li>
+      <li class="item" data-key="act-msg-bzhjMoEc1CkHlYXTyf65">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top"><span class="badge brand">7</span> <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/conversations/conversations/bzhjMoEc1CkHlYXTyf65" target="_blank" rel="noopener">Reply to Guest Visitor 001 (Call, 5 unread)</a></div>
+          <div class="item-body">Waiting 1d ago — WadeGlobal AI.</div>
+        </div>
+      </li></ul>
+      </section>
+    </div>
+    <div class="panel" id="panel-inbox">
+      <button class="back" onclick="goHome()">← Back to overview</button>
+      <section class="card">
+        <div class="card-head"><span class="icon">🔔</span><h2>Notifications — other tools</h2>
+        <span class="count-pill">0</span></div>
+        <p class="sub">Slack, email, Blotato and anything else connected, newest first.</p>
+        <div class="empty">No notifications from other tools yet. Slack connects when SLACK_BOT_TOKEN is added to .env; email and Blotato connect via their integrations — ask Claude to wire them up.</div>
+      </section>
+    </div>
     <div class="panel" id="panel-alerts">
       <button class="back" onclick="goHome()">← Back to overview</button>
       <section class="card">
@@ -160,7 +239,7 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f7f9f
           <div class="item-top">
             <a href="https://n8n.wadeglobal.ai/workflow/PCW3pD7IXxI5NOHC/executions/807571" target="_blank" rel="noopener">Agent Comms Hub</a>
             <span class="badge err">failed</span>
-            <span class="when">4h ago</span>
+            <span class="when">5h ago</span>
           </div>
         </div>
       </li>
@@ -611,7 +690,7 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f7f9f
             <span class="badge chan">Instagram</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">2 unread</span>
-            <span class="when">16h ago</span>
+            <span class="when">17h ago</span>
           </div>
           <div class="item-body">That sucks, sorry to hear it. If you&#x27;re looking to get back on track with your goals or need some support, wha…</div>
         </div>
@@ -624,7 +703,7 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f7f9f
             <span class="badge chan">Instagram</span>
             <span class="badge brand">WadeGlobal AI</span>
             <span class="badge unread">2 unread</span>
-            <span class="when">20h ago</span>
+            <span class="when">21h ago</span>
           </div>
           <div class="item-body">Damn bro sounds so good</div>
         </div>

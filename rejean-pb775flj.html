@@ -83,7 +83,7 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f7f9f
     <div id="overview">
       <div class="head">
         <h1>Good day, Rejean 👋</h1>
-        <div class="date">Wed Jul 15, 2026 · 08:37 AM CT · tap a section to see what's inside</div>
+        <div class="date">Wed Jul 15, 2026 · 08:55 AM CT · tap a section to see what's inside</div>
       </div>
       
       <section class="card" style="margin-top:22px">
@@ -94,6 +94,18 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f7f9f
         new leads to book walkthroughs with, and CleanCheck flags.</div>
       </section>
       <div class="tiles">
+      <button class="tile" onclick="openPanel('next')">
+        <div class="row1"><div class="icon">⚡</div><h3>Do this next</h3>
+        <span class="count">1</span></div>
+        <p>Your priorities right now, worked out from every message and alert — start at #1.</p>
+        <span class="open">View →</span>
+      </button>
+      <button class="tile zero" onclick="openPanel('inbox')">
+        <div class="row1"><div class="icon">🔔</div><h3>Notifications — other tools</h3>
+        <span class="count">0</span></div>
+        <p>Slack, email, Blotato and anything else connected, newest first.</p>
+        <span class="open">View →</span>
+      </button>
       <button class="tile" onclick="openPanel('targets')">
         <div class="row1"><div class="icon">🎯</div><h3>Daily targets</h3>
         <span class="count">4</span></div>
@@ -116,6 +128,31 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f7f9f
       Page refreshes automatically each morning.</div>
     </div>
     
+    <div class="panel" id="panel-next">
+      <button class="back" onclick="goHome()">← Back to overview</button>
+      <section class="card">
+        <div class="card-head"><span class="icon">⚡</span><h2>Do this next</h2>
+        <span class="count-pill">1</span></div>
+        <p class="sub">Your priorities right now, worked out from every message and alert — start at #1.</p>
+        <ul class="items">
+      <li class="item" data-key="act-acs-connect">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top"><span class="badge brand">1</span> <span class="strong">Get the ACS CRM connected — ask Jade/Wade for the ACS API token</span></div>
+          <div class="item-body">Until then this dashboard can&#x27;t show ACS clients, messages or leads.</div>
+        </div>
+      </li></ul>
+      </section>
+    </div>
+    <div class="panel" id="panel-inbox">
+      <button class="back" onclick="goHome()">← Back to overview</button>
+      <section class="card">
+        <div class="card-head"><span class="icon">🔔</span><h2>Notifications — other tools</h2>
+        <span class="count-pill">0</span></div>
+        <p class="sub">Slack, email, Blotato and anything else connected, newest first.</p>
+        <div class="empty">No notifications from other tools yet. Slack connects when SLACK_BOT_TOKEN is added to .env; email and Blotato connect via their integrations — ask Claude to wire them up.</div>
+      </section>
+    </div>
     <div class="panel" id="panel-targets">
       <button class="back" onclick="goHome()">← Back to overview</button>
       <section class="card">

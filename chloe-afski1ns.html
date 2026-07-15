@@ -83,10 +83,22 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f7f9f
     <div id="overview">
       <div class="head">
         <h1>Good day, Chloe 👋</h1>
-        <div class="date">Wed Jul 15, 2026 · 08:37 AM CT · tap a section to see what's inside</div>
+        <div class="date">Wed Jul 15, 2026 · 08:55 AM CT · tap a section to see what's inside</div>
       </div>
       
       <div class="tiles">
+      <button class="tile" onclick="openPanel('next')">
+        <div class="row1"><div class="icon">⚡</div><h3>Do this next</h3>
+        <span class="count">7</span></div>
+        <p>Your priorities right now, worked out from every message and alert — start at #1.</p>
+        <span class="open">View →</span>
+      </button>
+      <button class="tile zero" onclick="openPanel('inbox')">
+        <div class="row1"><div class="icon">🔔</div><h3>Notifications — other tools</h3>
+        <span class="count">0</span></div>
+        <p>Slack, email, Blotato and anything else connected, newest first.</p>
+        <span class="open">View →</span>
+      </button>
       <button class="tile alert" onclick="openPanel('dms')">
         <div class="row1"><div class="icon">💬</div><h3>DMs to answer</h3>
         <span class="count">24</span></div>
@@ -121,6 +133,73 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f7f9f
       Page refreshes automatically each morning.</div>
     </div>
     
+    <div class="panel" id="panel-next">
+      <button class="back" onclick="goHome()">← Back to overview</button>
+      <section class="card">
+        <div class="card-head"><span class="icon">⚡</span><h2>Do this next</h2>
+        <span class="count-pill">7</span></div>
+        <p class="sub">Your priorities right now, worked out from every message and alert — start at #1.</p>
+        <ul class="items">
+      <li class="item" data-key="act-msg-59per2T3tmj0kAXn9YXf">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top"><span class="badge brand">1</span> <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/59per2T3tmj0kAXn9YXf" target="_blank" rel="noopener">Reply to The Crow &amp; Cactus Co. on Instagram (2 unread)</a></div>
+          <div class="item-body">Waiting 3d ago — DMs are leads, reply same day.</div>
+        </div>
+      </li>
+      <li class="item" data-key="act-msg-mfytHiGaJaS48W4F2d6f">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top"><span class="badge brand">2</span> <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/conversations/conversations/mfytHiGaJaS48W4F2d6f" target="_blank" rel="noopener">Reply to _rahul_69__chouhan on Instagram (2 unread)</a></div>
+          <div class="item-body">Waiting 4d ago — DMs are leads, reply same day.</div>
+        </div>
+      </li>
+      <li class="item" data-key="act-msg-SC4fi7R0c9kvneBfb4wM">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top"><span class="badge brand">3</span> <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/SC4fi7R0c9kvneBfb4wM" target="_blank" rel="noopener">Reply to Olasubomi Aka-Bashorun on Instagram (2 unread)</a></div>
+          <div class="item-body">Waiting 19d ago — DMs are leads, reply same day.</div>
+        </div>
+      </li>
+      <li class="item" data-key="act-msg-Q4ysH33YNMI1JgdX3n0P">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top"><span class="badge brand">4</span> <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/Q4ysH33YNMI1JgdX3n0P" target="_blank" rel="noopener">Reply to WadeGlobal AI on Instagram (1 unread)</a></div>
+          <div class="item-body">Waiting 3d ago — DMs are leads, reply same day.</div>
+        </div>
+      </li>
+      <li class="item" data-key="act-msg-YSiYL7wKrHqsgf0abkO7">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top"><span class="badge brand">5</span> <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/YSiYL7wKrHqsgf0abkO7" target="_blank" rel="noopener">Reply to Benkő László on Instagram (1 unread)</a></div>
+          <div class="item-body">Waiting 6d ago — DMs are leads, reply same day.</div>
+        </div>
+      </li>
+      <li class="item" data-key="act-msg-Ogd783oLhiQBdchjAm7u">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top"><span class="badge brand">6</span> <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/Ogd783oLhiQBdchjAm7u" target="_blank" rel="noopener">Reply to William Wade on Instagram (1 unread)</a></div>
+          <div class="item-body">Waiting 15d ago — DMs are leads, reply same day.</div>
+        </div>
+      </li>
+      <li class="item" data-key="act-msg-odsyRycrPhxkJQM3QNif">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top"><span class="badge brand">7</span> <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/odsyRycrPhxkJQM3QNif" target="_blank" rel="noopener">Reply to Alejandro Martinez on Instagram (1 unread)</a></div>
+          <div class="item-body">Waiting 18d ago — DMs are leads, reply same day.</div>
+        </div>
+      </li></ul>
+      </section>
+    </div>
+    <div class="panel" id="panel-inbox">
+      <button class="back" onclick="goHome()">← Back to overview</button>
+      <section class="card">
+        <div class="card-head"><span class="icon">🔔</span><h2>Notifications — other tools</h2>
+        <span class="count-pill">0</span></div>
+        <p class="sub">Slack, email, Blotato and anything else connected, newest first.</p>
+        <div class="empty">No notifications from other tools yet. Slack connects when SLACK_BOT_TOKEN is added to .env; email and Blotato connect via their integrations — ask Claude to wire them up.</div>
+      </section>
+    </div>
     <div class="panel" id="panel-dms">
       <button class="back" onclick="goHome()">← Back to overview</button>
       <section class="card">
@@ -175,7 +254,7 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f7f9f
             <span class="badge chan">Instagram</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">2 unread</span>
-            <span class="when">16h ago</span>
+            <span class="when">17h ago</span>
           </div>
           <div class="item-body">That sucks, sorry to hear it. If you&#x27;re looking to get back on track with your goals or need some support, wha…</div>
         </div>
@@ -188,7 +267,7 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f7f9f
             <span class="badge chan">Instagram</span>
             <span class="badge brand">WadeGlobal AI</span>
             <span class="badge unread">2 unread</span>
-            <span class="when">20h ago</span>
+            <span class="when">21h ago</span>
           </div>
           <div class="item-body">Damn bro sounds so good</div>
         </div>
@@ -754,7 +833,7 @@ Most people stay stuck because they don’t actually know where they stand. That
             <span class="badge chan">Instagram</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             
-            <span class="when">79d ago</span>
+            <span class="when">80d ago</span>
           </div>
           <div class="item-body">Thanks for reaching out to W.A.D.E.!🤗
 We&#x27;re currently offline (resting and recharging—because balance matters …</div>
