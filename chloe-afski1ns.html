@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Chloe — WadeGlobal Command Center</title>
+<link rel="manifest" href="chloe-afski1ns.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="theme-color" content="#001F3F">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f7f9fc;color:#1e293b;min-height:100vh}
+.topbar{background:#fff;border-bottom:1px solid #e6ebf2;padding:14px 28px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.wordmark{font-size:17px;font-weight:800;color:#1e293b}
+.wordmark span{color:#2563eb}
+.topbar .divider{color:#cbd5e1}
+.topbar .who{font-size:13.5px;color:#475569}
+.topbar .who b{color:#1e293b}
+.topbar .others{margin-left:auto;display:flex;gap:8px}
+.topbar .others a{font-size:12px;color:#64748b;text-decoration:none;background:#f1f5f9;border-radius:99px;padding:5px 12px}
+.topbar .others a:hover{background:#e0eaff;color:#2563eb}
+.wrap{max-width:880px;margin:0 auto;padding:34px 22px}
+.head h1{font-size:22px;font-weight:800}
+.head .date{color:#64748b;font-size:13px;margin-top:5px}
+/* overview tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;margin-top:26px}
+.tile{background:#fff;border:1px solid #e6ebf2;border-radius:16px;padding:20px;cursor:pointer;text-align:left;
+      display:flex;flex-direction:column;gap:10px;transition:box-shadow .15s,border-color .15s;font:inherit;color:inherit}
+.tile:hover{border-color:#bfd3f7;box-shadow:0 4px 14px rgba(37,99,235,.10)}
+.tile .row1{display:flex;align-items:center;gap:12px}
+.tile .icon{width:42px;height:42px;border-radius:12px;background:#eaf1fe;display:flex;align-items:center;justify-content:center;font-size:20px}
+.tile .count{margin-left:auto;font-size:15px;font-weight:800;color:#2563eb;background:#eaf1fe;border-radius:99px;padding:4px 13px}
+.tile.alert .count{color:#dc2626;background:#fdecec}
+.tile.zero .count{color:#16a34a;background:#eafaf0}
+.tile h3{font-size:15px;font-weight:700}
+.tile p{font-size:12.5px;color:#64748b;line-height:1.5}
+.tile .open{font-size:12px;color:#2563eb;font-weight:600}
+/* section panels */
+.panel{display:none}
+.panel.open{display:block}
+#overview.closed{display:none}
+.back{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid #e6ebf2;border-radius:99px;
+      padding:8px 16px;font-size:13px;font-weight:600;color:#475569;cursor:pointer;margin-bottom:18px;font-family:inherit}
+.back:hover{border-color:#bfd3f7;color:#2563eb}
+.card{background:#fff;border:1px solid #e6ebf2;border-radius:16px;padding:22px 24px}
+.card-head{display:flex;align-items:center;gap:10px}
+.card-head .icon{font-size:20px}
+.card-head h2{font-size:16px;font-weight:700}
+.count-pill{background:#eaf1fe;color:#2563eb;font-size:12px;font-weight:700;border-radius:99px;padding:2px 10px}
+.sub{font-size:12.5px;color:#64748b;margin:6px 0 12px}
+.items{list-style:none}
+.item{display:flex;gap:10px;padding:11px 4px;border-top:1px solid #eef2f7;align-items:flex-start}
+.item.hidden-done{opacity:.35}
+.done-box{padding-top:2px}
+.item-main{flex:1;min-width:0}
+.item-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13.5px}
+.item-top a{color:#1e293b;font-weight:600;text-decoration:none}
+.item-top a:hover{color:#2563eb}
+.strong{font-weight:600}
+.item-body{font-size:12.5px;color:#64748b;margin-top:3px;overflow-wrap:anywhere}
+.when{margin-left:auto;font-size:11.5px;color:#94a3b8;white-space:nowrap}
+.badge{font-size:10.5px;font-weight:700;border-radius:99px;padding:2px 8px;white-space:nowrap}
+.badge.unread{background:#2563eb;color:#fff}
+.badge.chan{background:#f1f5f9;color:#64748b}
+.badge.brand{background:#eaf1fe;color:#2563eb}
+.badge.err{background:#fdecec;color:#b91c1c}
+.badge.ok{background:#eafaf0;color:#15803d}
+.badge.tag{background:#f1f5f9;color:#64748b;font-weight:600}
+.proof{display:block;font-size:11.5px;color:#15803d;margin-top:3px;font-style:italic}
+.empty{font-size:13px;color:#64748b;background:#f7f9fc;border-radius:10px;padding:16px;line-height:1.6}
+.note{font-size:13px;color:#334155}
+.foot{text-align:center;font-size:11.5px;color:#94a3b8;margin-top:30px;line-height:1.7}
+@media(max-width:600px){.wrap{padding:22px 14px}.tiles{grid-template-columns:1fr}}
+</style></head>
+<body>
+  <div class="topbar">
+    <div class="wordmark">WadeGlobal <span>AI</span></div>
+    <span class="divider">|</span>
+    <div class="who">📣 <b>Chloe</b> · Social Media — all brands</div>
+    <div class="others"><a href="https://storage-dev.github.io/wadeglobal-hq/jade-f3arcm03.html">🧭 Jade</a><a href="https://storage-dev.github.io/wadeglobal-hq/rejean-pb775flj.html">🧹 Rejean</a></div>
+  </div>
+  <div class="wrap">
+    <div id="overview">
+      <div class="head">
+        <h1>Good day, Chloe 👋</h1>
+        <div class="date">Wed Jul 15, 2026 · 08:23 AM CT · tap a section to see what's inside</div>
+      </div>
+      
+      <div class="tiles">
+      <button class="tile alert" onclick="openPanel('dms')">
+        <div class="row1"><div class="icon">💬</div><h3>DMs to answer</h3>
+        <span class="count">24</span></div>
+        <p>Instagram / Facebook / Google messages waiting for a reply, across all brands.</p>
+        <span class="open">View →</span>
+      </button>
+      <button class="tile" onclick="openPanel('convos')">
+        <div class="row1"><div class="icon">🗂️</div><h3>All social conversations</h3>
+        <span class="count">30</span></div>
+        <p>Every social thread across brands, newest first.</p>
+        <span class="open">View →</span>
+      </button>
+      <button class="tile zero" onclick="openPanel('posts')">
+        <div class="row1"><div class="icon">🗓️</div><h3>Scheduled posts</h3>
+        <span class="count">0</span></div>
+        <p>Upcoming posts across brand accounts (from Blotato).</p>
+        <span class="open">View →</span>
+      </button>
+      <button class="tile" onclick="openPanel('library')">
+        <div class="row1"><div class="icon">🎓</div><h3>Knowledge library</h3>
+        <span class="count">1</span></div>
+        <p>Walkthrough videos and how-tos for the WayGlobal system.</p>
+        <span class="open">View →</span>
+      </button>
+      <button class="tile" onclick="openPanel('notes')">
+        <div class="row1"><div class="icon">📌</div><h3>Team notes</h3>
+        <span class="count">4</span></div>
+        <p>Standing reminders — edit team_notes.json to change.</p>
+        <span class="open">View →</span>
+      </button></div>
+      <div class="foot">Check a box inside a section to clear an item (saved on this device).<br>
+      Page refreshes automatically each morning.</div>
+    </div>
+    
+    <div class="panel" id="panel-dms">
+      <button class="back" onclick="goHome()">← Back to overview</button>
+      <section class="card">
+        <div class="card-head"><span class="icon">💬</span><h2>DMs to answer</h2>
+        <span class="count-pill">24</span></div>
+        <p class="sub">Instagram / Facebook / Google messages waiting for a reply, across all brands.</p>
+        <ul class="items">
+      <li class="item" data-key="convo-gyOiGqNM4iejWNKCyeyV">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/gyOiGqNM4iejWNKCyeyV" target="_blank" rel="noopener">rich_fit_life_</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">4 unread</span>
+            <span class="when">26d ago</span>
+          </div>
+          <div class="item-body">Love the energy! So, what&#x27;s the biggest goal you&#x27;re hoping to achieve through coaching?</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-pnxvsz2x7zqsfCLW2FBu">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/pnxvsz2x7zqsfCLW2FBu" target="_blank" rel="noopener">ChrisTalksWeb3_ICP</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">3 unread</span>
+            <span class="when">32d ago</span>
+          </div>
+          <div class="item-body">Got it, sounds like you&#x27;re working on some cool stuff with blockchain and cybersecurity. What&#x27;s your biggest g…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-MawRt9af7adWAU2jHJEn">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/MawRt9af7adWAU2jHJEn" target="_blank" rel="noopener">Dania Dcruz</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">3 unread</span>
+            <span class="when">238d ago</span>
+          </div>
+          <div class="item-body">Hey, I saw your messages! Let’s dive in—what’s your biggest goal right now that you’d like to achieve through …</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-Bom3F21MKeWcpUZIKSYb">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/Bom3F21MKeWcpUZIKSYb" target="_blank" rel="noopener">Marie Hasler</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">2 unread</span>
+            <span class="when">16h ago</span>
+          </div>
+          <div class="item-body">That sucks, sorry to hear it. If you&#x27;re looking to get back on track with your goals or need some support, wha…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-8GfQe9CA3uI4mJcp82KQ">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/conversations/conversations/8GfQe9CA3uI4mJcp82KQ" target="_blank" rel="noopener">chrisyost_</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">WadeGlobal AI</span>
+            <span class="badge unread">2 unread</span>
+            <span class="when">20h ago</span>
+          </div>
+          <div class="item-body">Damn bro sounds so good</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-59per2T3tmj0kAXn9YXf">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/59per2T3tmj0kAXn9YXf" target="_blank" rel="noopener">The Crow &amp; Cactus Co.</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">2 unread</span>
+            <span class="when">3d ago</span>
+          </div>
+          <div class="item-body">Hey, thanks for sharing your info! If you&#x27;re looking to book a coaching session or want to talk about your goa…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-mfytHiGaJaS48W4F2d6f">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/conversations/conversations/mfytHiGaJaS48W4F2d6f" target="_blank" rel="noopener">_rahul_69__chouhan</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">WadeGlobal AI</span>
+            <span class="badge unread">2 unread</span>
+            <span class="when">4d ago</span>
+          </div>
+          <div class="item-body">Like comment share 👍🤷</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-SC4fi7R0c9kvneBfb4wM">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/SC4fi7R0c9kvneBfb4wM" target="_blank" rel="noopener">Olasubomi Aka-Bashorun</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">2 unread</span>
+            <span class="when">19d ago</span>
+          </div>
+          <div class="item-body">That&#x27;s huge—congrats on book #5 and leveling up with a marketing pro. What are the biggest challenges you&#x27;re f…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-vvbZzA0Sd1PR013mkDjU">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/vvbZzA0Sd1PR013mkDjU" target="_blank" rel="noopener">Victory Traders</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">2 unread</span>
+            <span class="when">25d ago</span>
+          </div>
+          <div class="item-body">I hear you, but let&#x27;s talk about your journey—what&#x27;s your biggest goal right now that you&#x27;d like to achieve th…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-AAw4XSpAe70LAnwiezmM">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/AAw4XSpAe70LAnwiezmM" target="_blank" rel="noopener">Shenita Haynes</a>
+            <span class="badge chan">Facebook</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">2 unread</span>
+            <span class="when">97d ago</span>
+          </div>
+          <div class="item-body">That’s a solid goal. What are the biggest challenges you’re facing right now in your business or career that a…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-zMQRnzJiHGfHn1cLOpur">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/zMQRnzJiHGfHn1cLOpur" target="_blank" rel="noopener">Jekwenta Primm | Coach K</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">2 unread</span>
+            <span class="when">132d ago</span>
+          </div>
+          <div class="item-body">✊ Hey Champion! Thanks for reaching out to W.A.D.E.—where we empower YOU to take control of your Freedom, Fami…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-zyZ9FV7YXzmnPu932bn5">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/zyZ9FV7YXzmnPu932bn5" target="_blank" rel="noopener">Instagram for Business</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">2 unread</span>
+            <span class="when">136d ago</span>
+          </div>
+          <div class="item-body">Hey, before we dive in, what’s your biggest goal right now that you’d like to achieve through coaching? Let’s …</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-Q4ysH33YNMI1JgdX3n0P">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/Q4ysH33YNMI1JgdX3n0P" target="_blank" rel="noopener">WadeGlobal AI</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">3d ago</span>
+          </div>
+          <div class="item-body"><i>(no preview)</i></div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-YSiYL7wKrHqsgf0abkO7">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/YSiYL7wKrHqsgf0abkO7" target="_blank" rel="noopener">Benkő László</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">6d ago</span>
+          </div>
+          <div class="item-body">Haha, sounds like you&#x27;re on a real mission for your friend. I&#x27;m here to help with coaching and business goals,…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-Ogd783oLhiQBdchjAm7u">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/Ogd783oLhiQBdchjAm7u" target="_blank" rel="noopener">William Wade</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">15d ago</span>
+          </div>
+          <div class="item-body"><i>(no preview)</i></div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-odsyRycrPhxkJQM3QNif">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/odsyRycrPhxkJQM3QNif" target="_blank" rel="noopener">Alejandro Martinez</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">18d ago</span>
+          </div>
+          <div class="item-body">Привет, Кристина! Звучит интересно, но я здесь, чтобы помочь с коучингом и бизнес-целями. Давай вернёмся к теб…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-41a8q8AO3xXVaTHDloSa">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/41a8q8AO3xXVaTHDloSa" target="_blank" rel="noopener">payal sharma</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">20d ago</span>
+          </div>
+          <div class="item-body">Hey, good question. Folks from anywhere can participate—location isn&#x27;t a barrier. What&#x27;s your biggest goal rig…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-C1Va8TfORsPNRrq2GGL7">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/C1Va8TfORsPNRrq2GGL7" target="_blank" rel="noopener">Yohana Perez</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">21d ago</span>
+          </div>
+          <div class="item-body">Спасибо, что поделились информацией. Давай вернёмся к делу — какая у тебя сейчас самая большая цель, которую т…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-aLUtqJv91LQBvqMWSSrN">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/aLUtqJv91LQBvqMWSSrN" target="_blank" rel="noopener">Music City Work Club</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">25d ago</span>
+          </div>
+          <div class="item-body">Hey Robert, appreciate you reaching out and sharing the invite. Sounds like a solid event for the Nashville cr…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-bCV3o1GcipeVPTrU05vR">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/bCV3o1GcipeVPTrU05vR" target="_blank" rel="noopener">Juan Franco Muñoz</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">29d ago</span>
+          </div>
+          <div class="item-body">Привет, София! Звучит интересно, но я здесь, чтобы помочь с коучингом и личными целями. Давай вернёмся к твоим…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-8RsZ19crdIwYFLwCZw7k">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/8RsZ19crdIwYFLwCZw7k" target="_blank" rel="noopener">Distinguished Gentleman</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">33d ago</span>
+          </div>
+          <div class="item-body">✊ Hey Champion! Thanks for reaching out to W.A.D.E.—where we empower YOU to take control of your Freedom, Fami…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-TA7WSSmOSa3ykmnqYMns">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/TA7WSSmOSa3ykmnqYMns" target="_blank" rel="noopener">Darryll Stinson</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">47d ago</span>
+          </div>
+          <div class="item-body"><i>(no preview)</i></div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-F6ZLDEVlDaVXmeuzaTCd">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/F6ZLDEVlDaVXmeuzaTCd" target="_blank" rel="noopener">Cleaning at its Best</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">62d ago</span>
+          </div>
+          <div class="item-body">Hey, let’s dive in—what’s your biggest goal right now that you’d like to achieve through coaching?</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-vkUPuH15NCQAfbsyyV0g">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/vkUPuH15NCQAfbsyyV0g" target="_blank" rel="noopener">Piru Kapone</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">122d ago</span>
+          </div>
+          <div class="item-body">Thanks for reaching out to W.A.D.E.!🤗
+We&#x27;re currently offline (resting and recharging—because balance matters …</div>
+        </div>
+      </li></ul>
+      </section>
+    </div>
+    <div class="panel" id="panel-convos">
+      <button class="back" onclick="goHome()">← Back to overview</button>
+      <section class="card">
+        <div class="card-head"><span class="icon">🗂️</span><h2>All social conversations</h2>
+        <span class="count-pill">30</span></div>
+        <p class="sub">Every social thread across brands, newest first.</p>
+        <ul class="items">
+      <li class="item" data-key="convo-ZL0RwXwu50br2muHlgNJ">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/ZL0RwXwu50br2muHlgNJ" target="_blank" rel="noopener">Aneta Raszkowska</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">2d ago</span>
+          </div>
+          <div class="item-body">Thanks for reaching out to W.A.D.E.!🤗
+We&#x27;re currently offline (resting and recharging—because balance matters …</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-zYxAECudANNoIjU6CQ99">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/conversations/conversations/zYxAECudANNoIjU6CQ99" target="_blank" rel="noopener">William Wade Jr. | TN</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">WadeGlobal AI</span>
+            
+            <span class="when">3d ago</span>
+          </div>
+          <div class="item-body"><i>(no preview)</i></div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-UFr8GFlTXJWty19E3Hzf">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/conversations/conversations/UFr8GFlTXJWty19E3Hzf" target="_blank" rel="noopener">William Wade</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">WadeGlobal AI</span>
+            
+            <span class="when">4d ago</span>
+          </div>
+          <div class="item-body">Reminder: Jonathan Sherman&#x27;s WadeGlobal AI consultation starts in 1 hour at 11:00 AM CDT. Review WGS notes bef…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-5NIUCDNMCmlZJjofxpIg">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/conversations/conversations/5NIUCDNMCmlZJjofxpIg" target="_blank" rel="noopener">dgbarbershop3318</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">WadeGlobal AI</span>
+            
+            <span class="when">5d ago</span>
+          </div>
+          <div class="item-body"><i>(no preview)</i></div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-R8zfCjxHVL6fufX6xmDb">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/R8zfCjxHVL6fufX6xmDb" target="_blank" rel="noopener">Nu mor caii , cand vor caini</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">10d ago</span>
+          </div>
+          <div class="item-body">Thanks for reaching out to W.A.D.E.!🤗
+We&#x27;re currently offline (resting and recharging—because balance matters …</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-Hrksgi4KPxeIUVUxDKZb">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/Hrksgi4KPxeIUVUxDKZb" target="_blank" rel="noopener">Brandon Orr | Cleaning Business Owner &amp; Coach</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">11d ago</span>
+          </div>
+          <div class="item-body">Facts 🔥🔥🔥</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-j1Kp6Mg8PnGES4falmer">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/conversations/conversations/j1Kp6Mg8PnGES4falmer" target="_blank" rel="noopener">Wendi Griffin</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">WadeGlobal AI</span>
+            
+            <span class="when">13d ago</span>
+          </div>
+          <div class="item-body">https://api.leadconnectorhq.com/widget/booking/9tPZi1fN4u7OSQFEnxxW</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-1WyqlYOELLSNIXa77uVi">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/1WyqlYOELLSNIXa77uVi" target="_blank" rel="noopener">Ascent Cleaning Solutions | Commercial Cleaning</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">14d ago</span>
+          </div>
+          <div class="item-body"><i>(no preview)</i></div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-BBGGQRZGWB2vc5jygdir">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/BBGGQRZGWB2vc5jygdir" target="_blank" rel="noopener">Glamour2Glow Beauty</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">17d ago</span>
+          </div>
+          <div class="item-body">Thanks for reaching out to W.A.D.E.!🤗
+We&#x27;re currently offline (resting and recharging—because balance matters …</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-IfNsG9tcrRuRsPKtGsLl">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/IfNsG9tcrRuRsPKtGsLl" target="_blank" rel="noopener">Chris Yost</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">17d ago</span>
+          </div>
+          <div class="item-body">Thanks for reaching out to W.A.D.E.!🤗
+We&#x27;re currently offline (resting and recharging—because balance matters …</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-e575wopxx8gEWKP8uI0I">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/e575wopxx8gEWKP8uI0I" target="_blank" rel="noopener">legenkilla</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">23d ago</span>
+          </div>
+          <div class="item-body">😂</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-RafaRllq0cAYINV2PwWn">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/RafaRllq0cAYINV2PwWn" target="_blank" rel="noopener">grace</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">30d ago</span>
+          </div>
+          <div class="item-body">Thanks for reaching out to W.A.D.E.!🤗
+We&#x27;re currently offline (resting and recharging—because balance matters …</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-ocdrSSpFLayW2XtXcqwr">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/ocdrSSpFLayW2XtXcqwr" target="_blank" rel="noopener">John Paul | Video Editor</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">31d ago</span>
+          </div>
+          <div class="item-body">Thanks for reaching out to W.A.D.E.!🤗
+We&#x27;re currently offline (resting and recharging—because balance matters …</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-k1pO9PijhgCKVuT7y16v">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/k1pO9PijhgCKVuT7y16v" target="_blank" rel="noopener">Alexandre Prado</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">32d ago</span>
+          </div>
+          <div class="item-body">Thanks for reaching out to W.A.D.E.!🤗
+We&#x27;re currently offline (resting and recharging—because balance matters …</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-39ZJbw6h32fHTyRndWvZ">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/39ZJbw6h32fHTyRndWvZ" target="_blank" rel="noopener">David Castro</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">36d ago</span>
+          </div>
+          <div class="item-body">✊ Hey Champion! Thanks for reaching out to W.A.D.E.—where we empower YOU to take control of your Freedom, Fami…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-lE9WfzppceDWf1iktYNU">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/lE9WfzppceDWf1iktYNU" target="_blank" rel="noopener">Papapietro</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">36d ago</span>
+          </div>
+          <div class="item-body">✊ Hey Champion! Thanks for reaching out to W.A.D.E.—where we empower YOU to take control of your Freedom, Fami…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-15WHsaPH2uUH0ibxsbHA">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/15WHsaPH2uUH0ibxsbHA" target="_blank" rel="noopener">Souvenir Mars</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">38d ago</span>
+          </div>
+          <div class="item-body">Thanks for reaching out to W.A.D.E.!🤗
+We&#x27;re currently offline (resting and recharging—because balance matters …</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-P6AiOLNHHBFhccSWsunf">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/P6AiOLNHHBFhccSWsunf" target="_blank" rel="noopener">Lawanda Myricks</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">68d ago</span>
+          </div>
+          <div class="item-body">✊ Hey Champion! Thanks for reaching out to W.A.D.E.—where we empower YOU to take control of your Freedom, Fami…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-Y6orCsZrjNNuwHyopmWh">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/Y6orCsZrjNNuwHyopmWh" target="_blank" rel="noopener">Michael Moor</a>
+            <span class="badge chan">Facebook</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">69d ago</span>
+          </div>
+          <div class="item-body">✊ Hey Champion! Thanks for reaching out to W.A.D.E.—where we empower YOU to take control of your Freedom, Fami…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-jA78779IyIqqNf0ps69r">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/jA78779IyIqqNf0ps69r" target="_blank" rel="noopener">Jim Morris</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">71d ago</span>
+          </div>
+          <div class="item-body">Thanks for the energy! What’s your biggest goal right now that you’d like to achieve through coaching?</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-datWEfWdnaml8bJcp6FF">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/datWEfWdnaml8bJcp6FF" target="_blank" rel="noopener">Ashley Garth</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">72d ago</span>
+          </div>
+          <div class="item-body">Hey,
+You’re in the right place.
+Most people stay stuck because they don’t actually know where they stand. That…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-Ey48STZOn41z1BZZtXr3">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/Ey48STZOn41z1BZZtXr3" target="_blank" rel="noopener">tre.creates</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">74d ago</span>
+          </div>
+          <div class="item-body"><i>(no preview)</i></div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-g0VGZdf9D6PmZTWyLilu">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/g0VGZdf9D6PmZTWyLilu" target="_blank" rel="noopener">Binayx</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">79d ago</span>
+          </div>
+          <div class="item-body">Thanks for reaching out to W.A.D.E.!🤗
+We&#x27;re currently offline (resting and recharging—because balance matters …</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-EaB9bqlAGf5cOqI9RMZM">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/EaB9bqlAGf5cOqI9RMZM" target="_blank" rel="noopener">albertaquintina</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">90d ago</span>
+          </div>
+          <div class="item-body">✊ Hey Champion! Thanks for reaching out to W.A.D.E.—where we empower YOU to take control of your Freedom, Fami…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-qZgzS9ez1fkivp4poLB8">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/qZgzS9ez1fkivp4poLB8" target="_blank" rel="noopener">Lindsey Grace Whiddon</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">94d ago</span>
+          </div>
+          <div class="item-body">Thanks for reaching out to W.A.D.E.!🤗
+We&#x27;re currently offline (resting and recharging—because balance matters …</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-2jtV2fS9z4X5SnwfJNQ0">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/2jtV2fS9z4X5SnwfJNQ0" target="_blank" rel="noopener">Saurav Sharma</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">98d ago</span>
+          </div>
+          <div class="item-body">are you looking for coaching in what commercial industry</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-pwoDYqrqGU9Eb0hcH3tr">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/pwoDYqrqGU9Eb0hcH3tr" target="_blank" rel="noopener">Christelle Dupez</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">109d ago</span>
+          </div>
+          <div class="item-body">Thanks for reaching out to W.A.D.E.!🤗
+We&#x27;re currently offline (resting and recharging—because balance matters …</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-NZQ68SeUNC6a5pSowts3">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/NZQ68SeUNC6a5pSowts3" target="_blank" rel="noopener">Saoirse Williams</a>
+            <span class="badge chan">Facebook</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">119d ago</span>
+          </div>
+          <div class="item-body">We&#x27;d love to support your journey! We offer coaching, empowerment sessions, and inspiring content such as 1 on…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-LsSYpNfi6lySU1m2utLg">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/LsSYpNfi6lySU1m2utLg" target="_blank" rel="noopener">Nauwyd Vahadi</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">135d ago</span>
+          </div>
+          <div class="item-body">✊ Hey Champion! Thanks for reaching out to W.A.D.E.—where we empower YOU to take control of your Freedom, Fami…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-qk1kq79lRx4nG0iY9Suh">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/qk1kq79lRx4nG0iY9Suh" target="_blank" rel="noopener">Meecael Vahedi</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            
+            <span class="when">157d ago</span>
+          </div>
+          <div class="item-body">✊ Hey Champion! Thanks for reaching out to W.A.D.E.—where we empower YOU to take control of your Freedom, Fami…</div>
+        </div>
+      </li></ul>
+      </section>
+    </div>
+    <div class="panel" id="panel-posts">
+      <button class="back" onclick="goHome()">← Back to overview</button>
+      <section class="card">
+        <div class="card-head"><span class="icon">🗓️</span><h2>Scheduled posts</h2>
+        <span class="count-pill">0</span></div>
+        <p class="sub">Upcoming posts across brand accounts (from Blotato).</p>
+        <div class="empty">No Blotato feed yet — ask Claude to refresh it, then re-run this tool.</div>
+      </section>
+    </div>
+    <div class="panel" id="panel-library">
+      <button class="back" onclick="goHome()">← Back to overview</button>
+      <section class="card">
+        <div class="card-head"><span class="icon">🎓</span><h2>Knowledge library</h2>
+        <span class="count-pill">1</span></div>
+        <p class="sub">Walkthrough videos and how-tos for the WayGlobal system.</p>
+        <ul class="items"><li class="item"><div class="item-main"><div class="item-top"><span class="strong">WayGlobal software walkthrough (Loom) — first video for every $49-setup client</span> <span class="badge err">link pending</span></div></div></li></ul>
+      </section>
+    </div>
+    <div class="panel" id="panel-notes">
+      <button class="back" onclick="goHome()">← Back to overview</button>
+      <section class="card">
+        <div class="card-head"><span class="icon">📌</span><h2>Team notes</h2>
+        <span class="count-pill">4</span></div>
+        <p class="sub">Standing reminders — edit team_notes.json to change.</p>
+        <ul class="items"><li class="item note"><div class="item-main">OVERDUE ~2 weeks (Wade, 7/14): Long Hair We Care UGC commercial — someone using HER product on camera. ~15-20 min task. Ship it and show Wade.</div></li><li class="item note"><div class="item-main">Close the loop on every post: don&#x27;t just send analytics back — report what the numbers said AND what you changed because of them.</div></li><li class="item note"><div class="item-main">Content-system analytics are showing all zeros — flag everything you post so we can verify tracking is fixed.</div></li><li class="item note"><div class="item-main">Unread DMs are leads, not just comments — reply same day. Coaching IG leads have no phone/email, so the DM thread IS the pipeline.</div></li></ul>
+      </section>
+    </div>
+  </div>
+<script>
+function openPanel(id){
+  document.getElementById('overview').classList.add('closed');
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('open')});
+  var p=document.getElementById('panel-'+id);
+  if(p){p.classList.add('open');window.scrollTo(0,0);history.replaceState(null,'','#'+id);}
+}
+function goHome(){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('open')});
+  document.getElementById('overview').classList.remove('closed');
+  history.replaceState(null,'','#');
+  window.scrollTo(0,0);
+}
+if(location.hash.length>1){openPanel(location.hash.slice(1));}
+document.querySelectorAll('.item[data-key]').forEach(function(li){
+  var raw=li.getAttribute('data-key');
+  var key='ccdone:'+raw, nkey='ccnote:'+raw;
+  var box=li.querySelector('input.done');
+  if(!box)return;
+  var main=li.querySelector('.item-main');
+  function showNote(){
+    var old=main.querySelector('.proof'); if(old)old.remove();
+    var n=localStorage.getItem(nkey);
+    if(n){var s=document.createElement('span');s.className='proof';s.textContent='✓ '+n;main.appendChild(s);}
+  }
+  if(localStorage.getItem(key)==='1'){box.checked=true;li.classList.add('hidden-done');showNote();}
+  box.addEventListener('change',function(){
+    if(box.checked){
+      var note=prompt('Close the loop — what was DONE? (one line of proof)')||'';
+      localStorage.setItem(key,'1');
+      if(note)localStorage.setItem(nkey,note);
+      li.classList.add('hidden-done');showNote();
+    }else{
+      localStorage.removeItem(key);localStorage.removeItem(nkey);
+      li.classList.remove('hidden-done');showNote();
+    }
+  });
+});
+</script>
+</body></html>

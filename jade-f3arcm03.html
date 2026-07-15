@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Jade — WadeGlobal Command Center</title>
+<link rel="manifest" href="jade-f3arcm03.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="theme-color" content="#001F3F">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f7f9fc;color:#1e293b;min-height:100vh}
+.topbar{background:#fff;border-bottom:1px solid #e6ebf2;padding:14px 28px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.wordmark{font-size:17px;font-weight:800;color:#1e293b}
+.wordmark span{color:#2563eb}
+.topbar .divider{color:#cbd5e1}
+.topbar .who{font-size:13.5px;color:#475569}
+.topbar .who b{color:#1e293b}
+.topbar .others{margin-left:auto;display:flex;gap:8px}
+.topbar .others a{font-size:12px;color:#64748b;text-decoration:none;background:#f1f5f9;border-radius:99px;padding:5px 12px}
+.topbar .others a:hover{background:#e0eaff;color:#2563eb}
+.wrap{max-width:880px;margin:0 auto;padding:34px 22px}
+.head h1{font-size:22px;font-weight:800}
+.head .date{color:#64748b;font-size:13px;margin-top:5px}
+/* overview tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;margin-top:26px}
+.tile{background:#fff;border:1px solid #e6ebf2;border-radius:16px;padding:20px;cursor:pointer;text-align:left;
+      display:flex;flex-direction:column;gap:10px;transition:box-shadow .15s,border-color .15s;font:inherit;color:inherit}
+.tile:hover{border-color:#bfd3f7;box-shadow:0 4px 14px rgba(37,99,235,.10)}
+.tile .row1{display:flex;align-items:center;gap:12px}
+.tile .icon{width:42px;height:42px;border-radius:12px;background:#eaf1fe;display:flex;align-items:center;justify-content:center;font-size:20px}
+.tile .count{margin-left:auto;font-size:15px;font-weight:800;color:#2563eb;background:#eaf1fe;border-radius:99px;padding:4px 13px}
+.tile.alert .count{color:#dc2626;background:#fdecec}
+.tile.zero .count{color:#16a34a;background:#eafaf0}
+.tile h3{font-size:15px;font-weight:700}
+.tile p{font-size:12.5px;color:#64748b;line-height:1.5}
+.tile .open{font-size:12px;color:#2563eb;font-weight:600}
+/* section panels */
+.panel{display:none}
+.panel.open{display:block}
+#overview.closed{display:none}
+.back{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid #e6ebf2;border-radius:99px;
+      padding:8px 16px;font-size:13px;font-weight:600;color:#475569;cursor:pointer;margin-bottom:18px;font-family:inherit}
+.back:hover{border-color:#bfd3f7;color:#2563eb}
+.card{background:#fff;border:1px solid #e6ebf2;border-radius:16px;padding:22px 24px}
+.card-head{display:flex;align-items:center;gap:10px}
+.card-head .icon{font-size:20px}
+.card-head h2{font-size:16px;font-weight:700}
+.count-pill{background:#eaf1fe;color:#2563eb;font-size:12px;font-weight:700;border-radius:99px;padding:2px 10px}
+.sub{font-size:12.5px;color:#64748b;margin:6px 0 12px}
+.items{list-style:none}
+.item{display:flex;gap:10px;padding:11px 4px;border-top:1px solid #eef2f7;align-items:flex-start}
+.item.hidden-done{opacity:.35}
+.done-box{padding-top:2px}
+.item-main{flex:1;min-width:0}
+.item-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13.5px}
+.item-top a{color:#1e293b;font-weight:600;text-decoration:none}
+.item-top a:hover{color:#2563eb}
+.strong{font-weight:600}
+.item-body{font-size:12.5px;color:#64748b;margin-top:3px;overflow-wrap:anywhere}
+.when{margin-left:auto;font-size:11.5px;color:#94a3b8;white-space:nowrap}
+.badge{font-size:10.5px;font-weight:700;border-radius:99px;padding:2px 8px;white-space:nowrap}
+.badge.unread{background:#2563eb;color:#fff}
+.badge.chan{background:#f1f5f9;color:#64748b}
+.badge.brand{background:#eaf1fe;color:#2563eb}
+.badge.err{background:#fdecec;color:#b91c1c}
+.badge.ok{background:#eafaf0;color:#15803d}
+.badge.tag{background:#f1f5f9;color:#64748b;font-weight:600}
+.proof{display:block;font-size:11.5px;color:#15803d;margin-top:3px;font-style:italic}
+.empty{font-size:13px;color:#64748b;background:#f7f9fc;border-radius:10px;padding:16px;line-height:1.6}
+.note{font-size:13px;color:#334155}
+.foot{text-align:center;font-size:11.5px;color:#94a3b8;margin-top:30px;line-height:1.7}
+@media(max-width:600px){.wrap{padding:22px 14px}.tiles{grid-template-columns:1fr}}
+</style></head>
+<body>
+  <div class="topbar">
+    <div class="wordmark">WadeGlobal <span>AI</span></div>
+    <span class="divider">|</span>
+    <div class="who">🧭 <b>Jade</b> · Operations &amp; Finance — all brands</div>
+    <div class="others"><a href="https://storage-dev.github.io/wadeglobal-hq/rejean-pb775flj.html">🧹 Rejean</a><a href="https://storage-dev.github.io/wadeglobal-hq/chloe-afski1ns.html">📣 Chloe</a></div>
+  </div>
+  <div class="wrap">
+    <div id="overview">
+      <div class="head">
+        <h1>Good day, Jade 👋</h1>
+        <div class="date">Wed Jul 15, 2026 · 08:23 AM CT · tap a section to see what's inside</div>
+      </div>
+      
+      <div class="tiles">
+      <button class="tile alert" onclick="openPanel('alerts')">
+        <div class="row1"><div class="icon">🚨</div><h3>System alerts</h3>
+        <span class="count">46</span></div>
+        <p>n8n automation runs that failed in the last 48 hours.</p>
+        <span class="open">View →</span>
+      </button>
+      <button class="tile" onclick="openPanel('messages')">
+        <div class="row1"><div class="icon">💬</div><h3>Unread messages</h3>
+        <span class="count">35</span></div>
+        <p>Client conversations with unread messages across all brands.</p>
+        <span class="open">View →</span>
+      </button>
+      <button class="tile" onclick="openPanel('leads')">
+        <div class="row1"><div class="icon">✨</div><h3>New leads</h3>
+        <span class="count">21</span></div>
+        <p>Contacts added to any brand&#x27;s CRM in the last 7 days.</p>
+        <span class="open">View →</span>
+      </button>
+      <button class="tile" onclick="openPanel('sites')">
+        <div class="row1"><div class="icon">🌐</div><h3>Websites</h3>
+        <span class="count">4</span></div>
+        <p>Live up/down status of client and brand websites — checked at page refresh.</p>
+        <span class="open">View →</span>
+      </button>
+      <button class="tile" onclick="openPanel('library')">
+        <div class="row1"><div class="icon">🎓</div><h3>Knowledge library</h3>
+        <span class="count">1</span></div>
+        <p>Walkthrough videos and how-tos for the WayGlobal system.</p>
+        <span class="open">View →</span>
+      </button>
+      <button class="tile" onclick="openPanel('notes')">
+        <div class="row1"><div class="icon">📌</div><h3>Team notes</h3>
+        <span class="count">6</span></div>
+        <p>Standing reminders — edit team_notes.json to change.</p>
+        <span class="open">View →</span>
+      </button></div>
+      <div class="foot">Check a box inside a section to clear an item (saved on this device).<br>
+      Page refreshes automatically each morning.</div>
+    </div>
+    
+    <div class="panel" id="panel-alerts">
+      <button class="back" onclick="goHome()">← Back to overview</button>
+      <section class="card">
+        <div class="card-head"><span class="icon">🚨</span><h2>System alerts</h2>
+        <span class="count-pill">46</span></div>
+        <p class="sub">n8n automation runs that failed in the last 48 hours.</p>
+        <ul class="items">
+      <li class="item" data-key="n8n-807703">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/ZsLrcUM4UAG1myDg/executions/807703" target="_blank" rel="noopener">SYS · Agent 01 — Personal Inbox v2</a>
+            <span class="badge err">failed</span>
+            <span class="when">54m ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-807689">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/ZsLrcUM4UAG1myDg/executions/807689" target="_blank" rel="noopener">SYS · Agent 01 — Personal Inbox v2</a>
+            <span class="badge err">failed</span>
+            <span class="when">1h ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-807571">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/PCW3pD7IXxI5NOHC/executions/807571" target="_blank" rel="noopener">Agent Comms Hub</a>
+            <span class="badge err">failed</span>
+            <span class="when">4h ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-807433">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/F8PxTiujpCQGdae7/executions/807433" target="_blank" rel="noopener">ACS · MRR Scoreboard Poller v2 (active only, excl former-client)</a>
+            <span class="badge err">failed</span>
+            <span class="when">9h ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-807092">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/PCW3pD7IXxI5NOHC/executions/807092" target="_blank" rel="noopener">Agent Comms Hub</a>
+            <span class="badge err">failed</span>
+            <span class="when">16h ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-807033">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/ZsLrcUM4UAG1myDg/executions/807033" target="_blank" rel="noopener">SYS · Agent 01 — Personal Inbox v2</a>
+            <span class="badge err">failed</span>
+            <span class="when">18h ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-807030">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/sZf8PUFAytgJPGNo/executions/807030" target="_blank" rel="noopener">WGAI · CIS 07 — Optimization Pass</a>
+            <span class="badge err">failed</span>
+            <span class="when">18h ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-806896">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/qqXf3tp9uFqgd0Do/executions/806896" target="_blank" rel="noopener">WGAI · COS 04 — Content Calendar Generator</a>
+            <span class="badge err">failed</span>
+            <span class="when">22h ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-806779">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/ZsLrcUM4UAG1myDg/executions/806779" target="_blank" rel="noopener">SYS · Agent 01 — Personal Inbox v2</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-806720">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/PCW3pD7IXxI5NOHC/executions/806720" target="_blank" rel="noopener">Agent Comms Hub</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-806717">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/PCW3pD7IXxI5NOHC/executions/806717" target="_blank" rel="noopener">Agent Comms Hub</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-806660">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/PCW3pD7IXxI5NOHC/executions/806660" target="_blank" rel="noopener">Agent Comms Hub</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-806461">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/ouERgQ8Z2coYfXlg/executions/806461" target="_blank" rel="noopener">WGAI · Email 03 — Reply Detection (Instantly v2)</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-806427">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/iRrmCRkEZNk9CRpC/executions/806427" target="_blank" rel="noopener">ACS · Inbox 01 v3 — Draft &amp; Hold</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-806370">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/hg3G1rRvzMTWoTuw/executions/806370" target="_blank" rel="noopener">WGAI · Event/Avery — Post-Call CRM Capture</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-806369">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/hg3G1rRvzMTWoTuw/executions/806369" target="_blank" rel="noopener">WGAI · Event/Avery — Post-Call CRM Capture</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-806362">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/hg3G1rRvzMTWoTuw/executions/806362" target="_blank" rel="noopener">WGAI · Event/Avery — Post-Call CRM Capture</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-806333">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/ZsLrcUM4UAG1myDg/executions/806333" target="_blank" rel="noopener">SYS · Agent 01 — Personal Inbox v2</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-806288">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/JZzqSCiCpLlDDfwl/executions/806288" target="_blank" rel="noopener">WADE · Assessment Intake v2 — Draft / Activate Only After Proof</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-806287">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/JZzqSCiCpLlDDfwl/executions/806287" target="_blank" rel="noopener">WADE · Assessment Intake v2 — Draft / Activate Only After Proof</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-806229">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/PCW3pD7IXxI5NOHC/executions/806229" target="_blank" rel="noopener">Agent Comms Hub</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-806219">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/ZsLrcUM4UAG1myDg/executions/806219" target="_blank" rel="noopener">SYS · Agent 01 — Personal Inbox v2</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-806097">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/PCW3pD7IXxI5NOHC/executions/806097" target="_blank" rel="noopener">Agent Comms Hub</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-806086">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/PCW3pD7IXxI5NOHC/executions/806086" target="_blank" rel="noopener">Agent Comms Hub</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-805744">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/ZsLrcUM4UAG1myDg/executions/805744" target="_blank" rel="noopener">SYS · Agent 01 — Personal Inbox v2</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-805603">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/nAKVNDzNoCXfx9sk/executions/805603" target="_blank" rel="noopener">WGAI CDS 00 - Content Media Presign</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-805602">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/nAKVNDzNoCXfx9sk/executions/805602" target="_blank" rel="noopener">WGAI CDS 00 - Content Media Presign</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-805513">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/ZsLrcUM4UAG1myDg/executions/805513" target="_blank" rel="noopener">SYS · Agent 01 — Personal Inbox v2</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-805469">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/ZsLrcUM4UAG1myDg/executions/805469" target="_blank" rel="noopener">SYS · Agent 01 — Personal Inbox v2</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-805434">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/Zl9IMjQsQFO4grpM/executions/805434" target="_blank" rel="noopener">WGAI · Call 02 — ElevenLabs Call Webhook Handler</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-805423">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/iRrmCRkEZNk9CRpC/executions/805423" target="_blank" rel="noopener">ACS · Inbox 01 v3 — Draft &amp; Hold</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-805407">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/doVkqH0cMgZix5H3/executions/805407" target="_blank" rel="noopener">WGAI · Inbox 01 v3 — Draft &amp; Hold</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-805375">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/HmGOnoJjNS8rWBxD/executions/805375" target="_blank" rel="noopener">WADE · Inbox 01 v3 — Draft &amp; Hold</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-805284">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/HmGOnoJjNS8rWBxD/executions/805284" target="_blank" rel="noopener">WADE · Inbox 01 v3 — Draft &amp; Hold</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-805194">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/iRrmCRkEZNk9CRpC/executions/805194" target="_blank" rel="noopener">ACS · Inbox 01 v3 — Draft &amp; Hold</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-805054">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/Zl9IMjQsQFO4grpM/executions/805054" target="_blank" rel="noopener">WGAI · Call 02 — ElevenLabs Call Webhook Handler</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-804992">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/sZf8PUFAytgJPGNo/executions/804992" target="_blank" rel="noopener">WGAI · CIS 07 — Optimization Pass</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-804989">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/xBfHY486mjtzZWMR/executions/804989" target="_blank" rel="noopener">WGAI · CES 05 — GEO Audit</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-804987">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/xBfHY486mjtzZWMR/executions/804987" target="_blank" rel="noopener">WGAI · CES 05 — GEO Audit</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-804983">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/xBfHY486mjtzZWMR/executions/804983" target="_blank" rel="noopener">WGAI · CES 05 — GEO Audit</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-804981">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/xBfHY486mjtzZWMR/executions/804981" target="_blank" rel="noopener">WGAI · CES 05 — GEO Audit</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-804980">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/xBfHY486mjtzZWMR/executions/804980" target="_blank" rel="noopener">WGAI · CES 05 — GEO Audit</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-804935">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/iRrmCRkEZNk9CRpC/executions/804935" target="_blank" rel="noopener">ACS · Inbox 01 v3 — Draft &amp; Hold</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-804933">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/iRrmCRkEZNk9CRpC/executions/804933" target="_blank" rel="noopener">ACS · Inbox 01 v3 — Draft &amp; Hold</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-804870">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/doVkqH0cMgZix5H3/executions/804870" target="_blank" rel="noopener">WGAI · Inbox 01 v3 — Draft &amp; Hold</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-804563">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/qqXf3tp9uFqgd0Do/executions/804563" target="_blank" rel="noopener">WGAI · COS 04 — Content Calendar Generator</a>
+            <span class="badge err">failed</span>
+            <span class="when">1d ago</span>
+          </div>
+        </div>
+      </li></ul>
+      </section>
+    </div>
+    <div class="panel" id="panel-messages">
+      <button class="back" onclick="goHome()">← Back to overview</button>
+      <section class="card">
+        <div class="card-head"><span class="icon">💬</span><h2>Unread messages</h2>
+        <span class="count-pill">35</span></div>
+        <p class="sub">Client conversations with unread messages across all brands.</p>
+        <ul class="items">
+      <li class="item" data-key="convo-Bom3F21MKeWcpUZIKSYb">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/Bom3F21MKeWcpUZIKSYb" target="_blank" rel="noopener">Marie Hasler</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">2 unread</span>
+            <span class="when">16h ago</span>
+          </div>
+          <div class="item-body">That sucks, sorry to hear it. If you&#x27;re looking to get back on track with your goals or need some support, wha…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-8GfQe9CA3uI4mJcp82KQ">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/conversations/conversations/8GfQe9CA3uI4mJcp82KQ" target="_blank" rel="noopener">chrisyost_</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">WadeGlobal AI</span>
+            <span class="badge unread">2 unread</span>
+            <span class="when">20h ago</span>
+          </div>
+          <div class="item-body">Damn bro sounds so good</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-bzhjMoEc1CkHlYXTyf65">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/conversations/conversations/bzhjMoEc1CkHlYXTyf65" target="_blank" rel="noopener">Guest Visitor 001</a>
+            <span class="badge chan">Call</span>
+            <span class="badge brand">WadeGlobal AI</span>
+            <span class="badge unread">5 unread</span>
+            <span class="when">1d ago</span>
+          </div>
+          <div class="item-body"><i>(no preview)</i></div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-sX1U8fgxM6fJkCN0pUeF">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/conversations/conversations/sX1U8fgxM6fJkCN0pUeF" target="_blank" rel="noopener">REYNA COTA</a>
+            <span class="badge chan">Call</span>
+            <span class="badge brand">WadeGlobal AI</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">1d ago</span>
+          </div>
+          <div class="item-body"><i>(no preview)</i></div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-59per2T3tmj0kAXn9YXf">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/59per2T3tmj0kAXn9YXf" target="_blank" rel="noopener">The Crow &amp; Cactus Co.</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">2 unread</span>
+            <span class="when">3d ago</span>
+          </div>
+          <div class="item-body">Hey, thanks for sharing your info! If you&#x27;re looking to book a coaching session or want to talk about your goa…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-Q4ysH33YNMI1JgdX3n0P">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/Q4ysH33YNMI1JgdX3n0P" target="_blank" rel="noopener">WadeGlobal AI</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">3d ago</span>
+          </div>
+          <div class="item-body"><i>(no preview)</i></div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-mfytHiGaJaS48W4F2d6f">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/conversations/conversations/mfytHiGaJaS48W4F2d6f" target="_blank" rel="noopener">_rahul_69__chouhan</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">WadeGlobal AI</span>
+            <span class="badge unread">2 unread</span>
+            <span class="when">4d ago</span>
+          </div>
+          <div class="item-body">Like comment share 👍🤷</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-YSiYL7wKrHqsgf0abkO7">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/YSiYL7wKrHqsgf0abkO7" target="_blank" rel="noopener">Benkő László</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">6d ago</span>
+          </div>
+          <div class="item-body">Haha, sounds like you&#x27;re on a real mission for your friend. I&#x27;m here to help with coaching and business goals,…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-KUAJ8a6Cgn8KwdWKXhry">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/conversations/conversations/KUAJ8a6Cgn8KwdWKXhry" target="_blank" rel="noopener">(•••) •••-••97</a>
+            <span class="badge chan">SMS</span>
+            <span class="badge brand">WadeGlobal AI</span>
+            <span class="badge unread">2 unread</span>
+            <span class="when">8d ago</span>
+          </div>
+          <div class="item-body">McAfee needs to be updated</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-Ogd783oLhiQBdchjAm7u">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/Ogd783oLhiQBdchjAm7u" target="_blank" rel="noopener">William Wade</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">15d ago</span>
+          </div>
+          <div class="item-body"><i>(no preview)</i></div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-odsyRycrPhxkJQM3QNif">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/odsyRycrPhxkJQM3QNif" target="_blank" rel="noopener">Alejandro Martinez</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">18d ago</span>
+          </div>
+          <div class="item-body">Привет, Кристина! Звучит интересно, но я здесь, чтобы помочь с коучингом и бизнес-целями. Давай вернёмся к теб…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-SC4fi7R0c9kvneBfb4wM">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/SC4fi7R0c9kvneBfb4wM" target="_blank" rel="noopener">Olasubomi Aka-Bashorun</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">2 unread</span>
+            <span class="when">19d ago</span>
+          </div>
+          <div class="item-body">That&#x27;s huge—congrats on book #5 and leveling up with a marketing pro. What are the biggest challenges you&#x27;re f…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-41a8q8AO3xXVaTHDloSa">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/41a8q8AO3xXVaTHDloSa" target="_blank" rel="noopener">payal sharma</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">20d ago</span>
+          </div>
+          <div class="item-body">Hey, good question. Folks from anywhere can participate—location isn&#x27;t a barrier. What&#x27;s your biggest goal rig…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-C1Va8TfORsPNRrq2GGL7">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/C1Va8TfORsPNRrq2GGL7" target="_blank" rel="noopener">Yohana Perez</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">21d ago</span>
+          </div>
+          <div class="item-body">Спасибо, что поделились информацией. Давай вернёмся к делу — какая у тебя сейчас самая большая цель, которую т…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-aLUtqJv91LQBvqMWSSrN">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/aLUtqJv91LQBvqMWSSrN" target="_blank" rel="noopener">Music City Work Club</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">25d ago</span>
+          </div>
+          <div class="item-body">Hey Robert, appreciate you reaching out and sharing the invite. Sounds like a solid event for the Nashville cr…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-vvbZzA0Sd1PR013mkDjU">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/vvbZzA0Sd1PR013mkDjU" target="_blank" rel="noopener">Victory Traders</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">2 unread</span>
+            <span class="when">25d ago</span>
+          </div>
+          <div class="item-body">I hear you, but let&#x27;s talk about your journey—what&#x27;s your biggest goal right now that you&#x27;d like to achieve th…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-gyOiGqNM4iejWNKCyeyV">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/gyOiGqNM4iejWNKCyeyV" target="_blank" rel="noopener">rich_fit_life_</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">4 unread</span>
+            <span class="when">26d ago</span>
+          </div>
+          <div class="item-body">Love the energy! So, what&#x27;s the biggest goal you&#x27;re hoping to achieve through coaching?</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-bCV3o1GcipeVPTrU05vR">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/bCV3o1GcipeVPTrU05vR" target="_blank" rel="noopener">Juan Franco Muñoz</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">29d ago</span>
+          </div>
+          <div class="item-body">Привет, София! Звучит интересно, но я здесь, чтобы помочь с коучингом и личными целями. Давай вернёмся к твоим…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-pnxvsz2x7zqsfCLW2FBu">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/pnxvsz2x7zqsfCLW2FBu" target="_blank" rel="noopener">ChrisTalksWeb3_ICP</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">3 unread</span>
+            <span class="when">32d ago</span>
+          </div>
+          <div class="item-body">Got it, sounds like you&#x27;re working on some cool stuff with blockchain and cybersecurity. What&#x27;s your biggest g…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-8RsZ19crdIwYFLwCZw7k">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/8RsZ19crdIwYFLwCZw7k" target="_blank" rel="noopener">Distinguished Gentleman</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">33d ago</span>
+          </div>
+          <div class="item-body">✊ Hey Champion! Thanks for reaching out to W.A.D.E.—where we empower YOU to take control of your Freedom, Fami…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-UV0GS1L6NnMMNXGGuBkA">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/UV0GS1L6NnMMNXGGuBkA" target="_blank" rel="noopener">Guest Visitor 001</a>
+            <span class="badge chan">Call</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">45d ago</span>
+          </div>
+          <div class="item-body"><i>(no preview)</i></div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-TA7WSSmOSa3ykmnqYMns">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/TA7WSSmOSa3ykmnqYMns" target="_blank" rel="noopener">Darryll Stinson</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">47d ago</span>
+          </div>
+          <div class="item-body"><i>(no preview)</i></div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-F6ZLDEVlDaVXmeuzaTCd">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/F6ZLDEVlDaVXmeuzaTCd" target="_blank" rel="noopener">Cleaning at its Best</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">62d ago</span>
+          </div>
+          <div class="item-body">Hey, let’s dive in—what’s your biggest goal right now that you’d like to achieve through coaching?</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-cR1Z68509EJ2a2zlbb1K">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/conversations/conversations/cR1Z68509EJ2a2zlbb1K" target="_blank" rel="noopener">Jim Morris</a>
+            <span class="badge chan">SMS</span>
+            <span class="badge brand">WadeGlobal AI</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">73d ago</span>
+          </div>
+          <div class="item-body">EXECUTION</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-Tu14XcA7EhZFbC7PCuPs">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/Tu14XcA7EhZFbC7PCuPs" target="_blank" rel="noopener">Guest Visitor 001</a>
+            <span class="badge chan">Call</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">92d ago</span>
+          </div>
+          <div class="item-body"><i>(no preview)</i></div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-AAw4XSpAe70LAnwiezmM">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/AAw4XSpAe70LAnwiezmM" target="_blank" rel="noopener">Shenita Haynes</a>
+            <span class="badge chan">Facebook</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">2 unread</span>
+            <span class="when">97d ago</span>
+          </div>
+          <div class="item-body">That’s a solid goal. What are the biggest challenges you’re facing right now in your business or career that a…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-vkUPuH15NCQAfbsyyV0g">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/vkUPuH15NCQAfbsyyV0g" target="_blank" rel="noopener">Piru Kapone</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">122d ago</span>
+          </div>
+          <div class="item-body">Thanks for reaching out to W.A.D.E.!🤗
+We&#x27;re currently offline (resting and recharging—because balance matters …</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-zMQRnzJiHGfHn1cLOpur">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/zMQRnzJiHGfHn1cLOpur" target="_blank" rel="noopener">Jekwenta Primm | Coach K</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">2 unread</span>
+            <span class="when">132d ago</span>
+          </div>
+          <div class="item-body">✊ Hey Champion! Thanks for reaching out to W.A.D.E.—where we empower YOU to take control of your Freedom, Fami…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-zyZ9FV7YXzmnPu932bn5">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/zyZ9FV7YXzmnPu932bn5" target="_blank" rel="noopener">Instagram for Business</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">2 unread</span>
+            <span class="when">136d ago</span>
+          </div>
+          <div class="item-body">Hey, before we dive in, what’s your biggest goal right now that you’d like to achieve through coaching? Let’s …</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-MawRt9af7adWAU2jHJEn">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/MawRt9af7adWAU2jHJEn" target="_blank" rel="noopener">Dania Dcruz</a>
+            <span class="badge chan">Instagram</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">3 unread</span>
+            <span class="when">238d ago</span>
+          </div>
+          <div class="item-body">Hey, I saw your messages! Let’s dive in—what’s your biggest goal right now that you’d like to achieve through …</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-202ub6oLct9igpUng6J5">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/202ub6oLct9igpUng6J5" target="_blank" rel="noopener">Victoria Rhodes</a>
+            <span class="badge chan">Email</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">289d ago</span>
+          </div>
+          <div class="item-body">Good evening,
+I apologize I just saw this. We can schedule a meeting soon.
+
+
+
+
+Thanks
+
+On Fri, Sep 26, 2025 at…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-pZu384XwYSB07XsP1WwO">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/pZu384XwYSB07XsP1WwO" target="_blank" rel="noopener">Marquarious</a>
+            <span class="badge chan">Email</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">291d ago</span>
+          </div>
+          <div class="item-body">[https://storage.googleapis.com/msgsndr/rfUOqNNuHceIdzMwE08M/media/665721d214fedb620c933f66.jpeg]
+
+Hey Marquar…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-3eA6RdkxaDZqYgPmJg2Z">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/3eA6RdkxaDZqYgPmJg2Z" target="_blank" rel="noopener">Cesar Velandia</a>
+            <span class="badge chan">Email</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">470d ago</span>
+          </div>
+          <div class="item-body">[https://storage.googleapis.com/msgsndr/rfUOqNNuHceIdzMwE08M/media/665721d214fedb620c933f66.jpeg]
+
+Hey Cesar,
+…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-y2WWkzyvSkI8I7JsVTaH">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/y2WWkzyvSkI8I7JsVTaH" target="_blank" rel="noopener">Donnell Murphy</a>
+            <span class="badge chan">Email</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">470d ago</span>
+          </div>
+          <div class="item-body">[https://storage.googleapis.com/msgsndr/rfUOqNNuHceIdzMwE08M/media/665721d214fedb620c933f66.jpeg]
+
+Hey Donnell…</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-jviNSARTLYGd89C81j0z">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/jviNSARTLYGd89C81j0z" target="_blank" rel="noopener">Kendall Oliver</a>
+            <span class="badge chan">Email</span>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">470d ago</span>
+          </div>
+          <div class="item-body">[https://storage.googleapis.com/msgsndr/rfUOqNNuHceIdzMwE08M/media/665721d214fedb620c933f66.jpeg]
+
+Hey Kendall…</div>
+        </div>
+      </li></ul>
+      </section>
+    </div>
+    <div class="panel" id="panel-leads">
+      <button class="back" onclick="goHome()">← Back to overview</button>
+      <section class="card">
+        <div class="card-head"><span class="icon">✨</span><h2>New leads</h2>
+        <span class="count-pill">21</span></div>
+        <p class="sub">Contacts added to any brand&#x27;s CRM in the last 7 days.</p>
+        <ul class="items">
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/EYxvqvJoD7mcrVk5djWq">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/EYxvqvJoD7mcrVk5djWq" target="_blank" rel="noopener">website qa test</a>
+            <span class="badge brand">WadeGlobal AI</span>
+            <span class="badge tag">wgai-voice-lead</span> <span class="badge tag">convai-call</span> <span class="badge tag">avery-call</span> <span class="badge tag">avery-qualified</span>
+            <span class="when">1d ago</span>
+          </div>
+          <div class="item-body">q•••@wadeglobal.ai · +•••••••••37</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/E6RmNH6Q0jujN7VlrzuG">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/E6RmNH6Q0jujN7VlrzuG" target="_blank" rel="noopener">guest visitor 001</a>
+            <span class="badge brand">WadeGlobal AI</span>
+            
+            <span class="when">1d ago</span>
+          </div>
+          <div class="item-body">no contact info</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/naPc9EfsIobEPIsyySYC">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/naPc9EfsIobEPIsyySYC" target="_blank" rel="noopener">jovan young</a>
+            <span class="badge brand">WadeGlobal AI</span>
+            <span class="badge tag">inbound-email</span> <span class="badge tag">inbox-support</span> <span class="badge tag">prospect</span> <span class="badge tag">website-discovery</span>
+            <span class="when">1d ago</span>
+          </div>
+          <div class="item-body">j•••@gmail.com</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/0uQQKZo8xNE8swghoj7G">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/0uQQKZo8xNE8swghoj7G" target="_blank" rel="noopener">wgai acceptance codex-acceptance-20260713-1747</a>
+            <span class="badge brand">WadeGlobal AI</span>
+            <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span> <span class="badge tag">internal-test</span>
+            <span class="when">1d ago</span>
+          </div>
+          <div class="item-body">s•••@wadeglobal.ai</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/qp579b4jpBlb9AbcHShr">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/qp579b4jpBlb9AbcHShr" target="_blank" rel="noopener">acs.wadeglobal@gmail.com</a>
+            <span class="badge brand">WadeGlobal AI</span>
+            
+            <span class="when">1d ago</span>
+          </div>
+          <div class="item-body">a•••@gmail.com</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/xZtIBKZOjQXtPcZfeiNM">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/xZtIBKZOjQXtPcZfeiNM" target="_blank" rel="noopener">reyna cota</a>
+            <span class="badge brand">WadeGlobal AI</span>
+            <span class="badge tag">name via lookup</span>
+            <span class="when">1d ago</span>
+          </div>
+          <div class="item-body">+•••••••••26</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/hCNYYWsDw8SBzn7iBH1C">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/hCNYYWsDw8SBzn7iBH1C" target="_blank" rel="noopener">william wade jr. | tn</a>
+            <span class="badge brand">WadeGlobal AI</span>
+            
+            <span class="when">3d ago</span>
+          </div>
+          <div class="item-body">no contact info</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/p1DiZVwRSzzAietatPvr">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/p1DiZVwRSzzAietatPvr" target="_blank" rel="noopener">chrisyost_</a>
+            <span class="badge brand">WadeGlobal AI</span>
+            
+            <span class="when">4d ago</span>
+          </div>
+          <div class="item-body">no contact info</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/ZDhcKnWUD7R1H8VB0oMz">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/ZDhcKnWUD7R1H8VB0oMz" target="_blank" rel="noopener">_rahul_69__chouhan</a>
+            <span class="badge brand">WadeGlobal AI</span>
+            
+            <span class="when">4d ago</span>
+          </div>
+          <div class="item-body">no contact info</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/mAYFc8kJPFBRAts3SZWZ">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/mAYFc8kJPFBRAts3SZWZ" target="_blank" rel="noopener">dgbarbershop3318</a>
+            <span class="badge brand">WadeGlobal AI</span>
+            
+            <span class="when">5d ago</span>
+          </div>
+          <div class="item-body">no contact info</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/ZClkENGJ1jTu9uCnAvR5">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/ZClkENGJ1jTu9uCnAvR5" target="_blank" rel="noopener">orett douglas</a>
+            <span class="badge brand">WadeGlobal AI</span>
+            <span class="badge tag">referral</span> <span class="badge tag">source-rick-harris</span> <span class="badge tag">lane-cleaning</span> <span class="badge tag">inbox-missed-2026-07-08</span>
+            <span class="when">5d ago</span>
+          </div>
+          <div class="item-body">o•••@rbc.com · +•••••••••00</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/rkNvIBiG31EVV3J4qVKC">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/rkNvIBiG31EVV3J4qVKC" target="_blank" rel="noopener">john hemphill</a>
+            <span class="badge brand">WadeGlobal AI</span>
+            <span class="badge tag">referral-christian-aquamen</span> <span class="badge tag">commercial-cleaning</span> <span class="badge tag">high-ticket-post-construction</span> <span class="badge tag">consultation-pending</span>
+            <span class="when">5d ago</span>
+          </div>
+          <div class="item-body">j•••@gmail.com · +•••••••••09</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/8BicuZA6ehrPcpRazOMa">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/8BicuZA6ehrPcpRazOMa" target="_blank" rel="noopener">wgai loop test</a>
+            <span class="badge brand">WadeGlobal AI</span>
+            <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span>
+            <span class="when">5d ago</span>
+          </div>
+          <div class="item-body">w•••@wadeglobal.ai</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/contacts/detail/ZL2lPas1ArvtxbbfscDT">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/contacts/detail/ZL2lPas1ArvtxbbfscDT" target="_blank" rel="noopener">internal wade delivery proof</a>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge tag">internal-test</span> <span class="badge tag">exclude-from-kpi</span> <span class="badge tag">production-acceptance-2026-07-13</span>
+            <span class="when">1d ago</span>
+          </div>
+          <div class="item-body">a•••@gmail.com</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/contacts/detail/iyklu10VYUqhivWM9j0j">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/contacts/detail/iyklu10VYUqhivWM9j0j" target="_blank" rel="noopener">w.a.d.e. internal acceptance two</a>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge tag">assessment-lead</span> <span class="badge tag">wade-assessment-v2</span> <span class="badge tag">route-assessment</span> <span class="badge tag">assessment-completed</span>
+            <span class="when">1d ago</span>
+          </div>
+          <div class="item-body">w•••@example.com</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/contacts/detail/S0L8FRc1K0O3CiJI5uCg">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/contacts/detail/S0L8FRc1K0O3CiJI5uCg" target="_blank" rel="noopener">w.a.d.e. internal acceptance</a>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge tag">assessment-lead</span> <span class="badge tag">wade-assessment-v2</span> <span class="badge tag">route-assessment</span> <span class="badge tag">assessment-completed</span>
+            <span class="when">1d ago</span>
+          </div>
+          <div class="item-body">w•••@example.com</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/contacts/detail/gEbUDkW2EIdtEHgu24av">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/contacts/detail/gEbUDkW2EIdtEHgu24av" target="_blank" rel="noopener">marie hasler</a>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge tag">source-instagram</span>
+            <span class="when">1d ago</span>
+          </div>
+          <div class="item-body">no contact info</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/contacts/detail/I61KKELTJUjgDEYAAXXy">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/contacts/detail/I61KKELTJUjgDEYAAXXy" target="_blank" rel="noopener">aneta raszkowska</a>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge tag">source-instagram</span>
+            <span class="when">2d ago</span>
+          </div>
+          <div class="item-body">no contact info</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/contacts/detail/Vlv3qDlKmEeFUVCkJpNa">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/contacts/detail/Vlv3qDlKmEeFUVCkJpNa" target="_blank" rel="noopener">the crow &amp; cactus co.</a>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge tag">source-instagram</span>
+            <span class="when">3d ago</span>
+          </div>
+          <div class="item-body">+•••••••••44</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/contacts/detail/xCgXdzLS65vwqy80OsS3">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/contacts/detail/xCgXdzLS65vwqy80OsS3" target="_blank" rel="noopener">wgai-loop-test@wadeglobal.ai</a>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge tag">self-assessment</span> <span class="badge tag">assessment-lead</span>
+            <span class="when">5d ago</span>
+          </div>
+          <div class="item-body">w•••@wadeglobal.ai</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/contacts/detail/vofPoONT4D0gTWeh5hPP">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/contacts/detail/vofPoONT4D0gTWeh5hPP" target="_blank" rel="noopener">benkő lászló</a>
+            <span class="badge brand">W.A.D.E. Coaching</span>
+            <span class="badge tag">source-instagram</span>
+            <span class="when">6d ago</span>
+          </div>
+          <div class="item-body">no contact info</div>
+        </div>
+      </li></ul>
+      </section>
+    </div>
+    <div class="panel" id="panel-sites">
+      <button class="back" onclick="goHome()">← Back to overview</button>
+      <section class="card">
+        <div class="card-head"><span class="icon">🌐</span><h2>Websites</h2>
+        <span class="count-pill">4</span></div>
+        <p class="sub">Live up/down status of client and brand websites — checked at page refresh.</p>
+        <ul class="items">
+      <li class="item" data-key="site-WGAI Cleaning Bid Platform">
+        <div class="item-main">
+          <div class="item-top"><a href="https://wgai-cleaning-bid.pages.dev" target="_blank" rel="noopener">WGAI Cleaning Bid Platform</a> <span class="badge ok">up · 200</span></div>
+          <div class="item-body">https://wgai-cleaning-bid.pages.dev</div>
+        </div>
+      </li>
+      <li class="item" data-key="site-Harbor City website">
+        <div class="item-main">
+          <div class="item-top">Harbor City website <span class="badge chan">URL not set</span></div>
+          <div class="item-body">Add the URL in command_center_config.json</div>
+        </div>
+      </li>
+      <li class="item" data-key="site-Long Hair We Care website">
+        <div class="item-main">
+          <div class="item-top">Long Hair We Care website <span class="badge chan">URL not set</span></div>
+          <div class="item-body">Add the URL in command_center_config.json</div>
+        </div>
+      </li>
+      <li class="item" data-key="site-WadeGlobal AI website">
+        <div class="item-main">
+          <div class="item-top">WadeGlobal AI website <span class="badge chan">URL not set</span></div>
+          <div class="item-body">Add the URL in command_center_config.json</div>
+        </div>
+      </li></ul>
+      </section>
+    </div>
+    <div class="panel" id="panel-library">
+      <button class="back" onclick="goHome()">← Back to overview</button>
+      <section class="card">
+        <div class="card-head"><span class="icon">🎓</span><h2>Knowledge library</h2>
+        <span class="count-pill">1</span></div>
+        <p class="sub">Walkthrough videos and how-tos for the WayGlobal system.</p>
+        <ul class="items"><li class="item"><div class="item-main"><div class="item-top"><span class="strong">WayGlobal software walkthrough (Loom) — first video for every $49-setup client</span> <span class="badge err">link pending</span></div></div></li></ul>
+      </section>
+    </div>
+    <div class="panel" id="panel-notes">
+      <button class="back" onclick="goHome()">← Back to overview</button>
+      <section class="card">
+        <div class="card-head"><span class="icon">📌</span><h2>Team notes</h2>
+        <span class="count-pill">6</span></div>
+        <p class="sub">Standing reminders — edit team_notes.json to change.</p>
+        <ul class="items"><li class="item note"><div class="item-main">Close the loop (Wade, 7/14): end on the DOING, not the planning. Every cleared item should carry one line of proof of what was done.</div></li><li class="item note"><div class="item-main">Every lead must be registered in BOTH the CRM (WayGlobal software) and the Notion client database — if one is missing, the agents get confused and leads fall through.</div></li><li class="item note"><div class="item-main">Follow-ups Wade flagged 7/14: Jonathan Sherman consultation follow-up call, and the Jovan email — confirm both were handled.</div></li><li class="item note"><div class="item-main">Christian Gilbert is a paused/closed client, NOT an open lead — make sure the CRM and agent data reflect that.</div></li><li class="item note"><div class="item-main">Distinguished Gentleman billing: $500 setup + monthly plan discussed 7/14 — confirm the exact monthly amount with Wade before invoicing.</div></li><li class="item note"><div class="item-main">Weekly loop: review these command centers every week — what&#x27;s working, what&#x27;s missing, adjust.</div></li></ul>
+      </section>
+    </div>
+  </div>
+<script>
+function openPanel(id){
+  document.getElementById('overview').classList.add('closed');
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('open')});
+  var p=document.getElementById('panel-'+id);
+  if(p){p.classList.add('open');window.scrollTo(0,0);history.replaceState(null,'','#'+id);}
+}
+function goHome(){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('open')});
+  document.getElementById('overview').classList.remove('closed');
+  history.replaceState(null,'','#');
+  window.scrollTo(0,0);
+}
+if(location.hash.length>1){openPanel(location.hash.slice(1));}
+document.querySelectorAll('.item[data-key]').forEach(function(li){
+  var raw=li.getAttribute('data-key');
+  var key='ccdone:'+raw, nkey='ccnote:'+raw;
+  var box=li.querySelector('input.done');
+  if(!box)return;
+  var main=li.querySelector('.item-main');
+  function showNote(){
+    var old=main.querySelector('.proof'); if(old)old.remove();
+    var n=localStorage.getItem(nkey);
+    if(n){var s=document.createElement('span');s.className='proof';s.textContent='✓ '+n;main.appendChild(s);}
+  }
+  if(localStorage.getItem(key)==='1'){box.checked=true;li.classList.add('hidden-done');showNote();}
+  box.addEventListener('change',function(){
+    if(box.checked){
+      var note=prompt('Close the loop — what was DONE? (one line of proof)')||'';
+      localStorage.setItem(key,'1');
+      if(note)localStorage.setItem(nkey,note);
+      li.classList.add('hidden-done');showNote();
+    }else{
+      localStorage.removeItem(key);localStorage.removeItem(nkey);
+      li.classList.remove('hidden-done');showNote();
+    }
+  });
+});
+</script>
+</body></html>

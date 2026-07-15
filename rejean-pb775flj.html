@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Rejean — WadeGlobal Command Center</title>
+<link rel="manifest" href="rejean-pb775flj.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="theme-color" content="#001F3F">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f7f9fc;color:#1e293b;min-height:100vh}
+.topbar{background:#fff;border-bottom:1px solid #e6ebf2;padding:14px 28px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.wordmark{font-size:17px;font-weight:800;color:#1e293b}
+.wordmark span{color:#2563eb}
+.topbar .divider{color:#cbd5e1}
+.topbar .who{font-size:13.5px;color:#475569}
+.topbar .who b{color:#1e293b}
+.topbar .others{margin-left:auto;display:flex;gap:8px}
+.topbar .others a{font-size:12px;color:#64748b;text-decoration:none;background:#f1f5f9;border-radius:99px;padding:5px 12px}
+.topbar .others a:hover{background:#e0eaff;color:#2563eb}
+.wrap{max-width:880px;margin:0 auto;padding:34px 22px}
+.head h1{font-size:22px;font-weight:800}
+.head .date{color:#64748b;font-size:13px;margin-top:5px}
+/* overview tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;margin-top:26px}
+.tile{background:#fff;border:1px solid #e6ebf2;border-radius:16px;padding:20px;cursor:pointer;text-align:left;
+      display:flex;flex-direction:column;gap:10px;transition:box-shadow .15s,border-color .15s;font:inherit;color:inherit}
+.tile:hover{border-color:#bfd3f7;box-shadow:0 4px 14px rgba(37,99,235,.10)}
+.tile .row1{display:flex;align-items:center;gap:12px}
+.tile .icon{width:42px;height:42px;border-radius:12px;background:#eaf1fe;display:flex;align-items:center;justify-content:center;font-size:20px}
+.tile .count{margin-left:auto;font-size:15px;font-weight:800;color:#2563eb;background:#eaf1fe;border-radius:99px;padding:4px 13px}
+.tile.alert .count{color:#dc2626;background:#fdecec}
+.tile.zero .count{color:#16a34a;background:#eafaf0}
+.tile h3{font-size:15px;font-weight:700}
+.tile p{font-size:12.5px;color:#64748b;line-height:1.5}
+.tile .open{font-size:12px;color:#2563eb;font-weight:600}
+/* section panels */
+.panel{display:none}
+.panel.open{display:block}
+#overview.closed{display:none}
+.back{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid #e6ebf2;border-radius:99px;
+      padding:8px 16px;font-size:13px;font-weight:600;color:#475569;cursor:pointer;margin-bottom:18px;font-family:inherit}
+.back:hover{border-color:#bfd3f7;color:#2563eb}
+.card{background:#fff;border:1px solid #e6ebf2;border-radius:16px;padding:22px 24px}
+.card-head{display:flex;align-items:center;gap:10px}
+.card-head .icon{font-size:20px}
+.card-head h2{font-size:16px;font-weight:700}
+.count-pill{background:#eaf1fe;color:#2563eb;font-size:12px;font-weight:700;border-radius:99px;padding:2px 10px}
+.sub{font-size:12.5px;color:#64748b;margin:6px 0 12px}
+.items{list-style:none}
+.item{display:flex;gap:10px;padding:11px 4px;border-top:1px solid #eef2f7;align-items:flex-start}
+.item.hidden-done{opacity:.35}
+.done-box{padding-top:2px}
+.item-main{flex:1;min-width:0}
+.item-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13.5px}
+.item-top a{color:#1e293b;font-weight:600;text-decoration:none}
+.item-top a:hover{color:#2563eb}
+.strong{font-weight:600}
+.item-body{font-size:12.5px;color:#64748b;margin-top:3px;overflow-wrap:anywhere}
+.when{margin-left:auto;font-size:11.5px;color:#94a3b8;white-space:nowrap}
+.badge{font-size:10.5px;font-weight:700;border-radius:99px;padding:2px 8px;white-space:nowrap}
+.badge.unread{background:#2563eb;color:#fff}
+.badge.chan{background:#f1f5f9;color:#64748b}
+.badge.brand{background:#eaf1fe;color:#2563eb}
+.badge.err{background:#fdecec;color:#b91c1c}
+.badge.ok{background:#eafaf0;color:#15803d}
+.badge.tag{background:#f1f5f9;color:#64748b;font-weight:600}
+.proof{display:block;font-size:11.5px;color:#15803d;margin-top:3px;font-style:italic}
+.empty{font-size:13px;color:#64748b;background:#f7f9fc;border-radius:10px;padding:16px;line-height:1.6}
+.note{font-size:13px;color:#334155}
+.foot{text-align:center;font-size:11.5px;color:#94a3b8;margin-top:30px;line-height:1.7}
+@media(max-width:600px){.wrap{padding:22px 14px}.tiles{grid-template-columns:1fr}}
+</style></head>
+<body>
+  <div class="topbar">
+    <div class="wordmark">WadeGlobal <span>AI</span></div>
+    <span class="divider">|</span>
+    <div class="who">🧹 <b>Rejean</b> · ACS Operations</div>
+    <div class="others"><a href="https://storage-dev.github.io/wadeglobal-hq/jade-f3arcm03.html">🧭 Jade</a><a href="https://storage-dev.github.io/wadeglobal-hq/chloe-afski1ns.html">📣 Chloe</a></div>
+  </div>
+  <div class="wrap">
+    <div id="overview">
+      <div class="head">
+        <h1>Good day, Rejean 👋</h1>
+        <div class="date">Wed Jul 15, 2026 · 08:23 AM CT · tap a section to see what's inside</div>
+      </div>
+      
+      <section class="card" style="margin-top:22px">
+        <div class="card-head"><span class="icon">🔌</span><h2>Almost ready — connect the ACS account</h2></div>
+        <p class="sub">Your center goes live the moment ACS's CRM is linked.</p>
+        <div class="empty">Ask Jade / Sir William to add <b>ACS_PIT</b> and <b>ACS_LOCATION_ID</b> to the .env file.
+        Once connected you'll see here every day: unread client &amp; cleaner messages, today's schedule,
+        new leads to book walkthroughs with, and CleanCheck flags.</div>
+      </section>
+      <div class="tiles">
+      <button class="tile" onclick="openPanel('targets')">
+        <div class="row1"><div class="icon">🎯</div><h3>Daily targets</h3>
+        <span class="count">4</span></div>
+        <p>The outbound numbers Wade set — hit these every working day.</p>
+        <span class="open">View →</span>
+      </button>
+      <button class="tile" onclick="openPanel('library')">
+        <div class="row1"><div class="icon">🎓</div><h3>Knowledge library</h3>
+        <span class="count">1</span></div>
+        <p>Walkthrough videos and how-tos for the WayGlobal system.</p>
+        <span class="open">View →</span>
+      </button>
+      <button class="tile" onclick="openPanel('notes')">
+        <div class="row1"><div class="icon">📌</div><h3>Team notes</h3>
+        <span class="count">3</span></div>
+        <p>Standing reminders — edit team_notes.json to change.</p>
+        <span class="open">View →</span>
+      </button></div>
+      <div class="foot">Check a box inside a section to clear an item (saved on this device).<br>
+      Page refreshes automatically each morning.</div>
+    </div>
+    
+    <div class="panel" id="panel-targets">
+      <button class="back" onclick="goHome()">← Back to overview</button>
+      <section class="card">
+        <div class="card-head"><span class="icon">🎯</span><h2>Daily targets</h2>
+        <span class="count-pill">4</span></div>
+        <p class="sub">The outbound numbers Wade set — hit these every working day.</p>
+        <ul class="items">
+      <li class="item">
+        <div class="item-main">
+          <div class="item-top"><span class="strong">Outbound calls</span>
+          <span class="badge brand">250 / day</span></div>
+        </div>
+      </li>
+      <li class="item">
+        <div class="item-main">
+          <div class="item-top"><span class="strong">Outbound emails</span>
+          <span class="badge brand">80 / day</span></div>
+        </div>
+      </li>
+      <li class="item">
+        <div class="item-main">
+          <div class="item-top"><span class="strong">Tri-fold brochures (3-week &amp; 1-month runs)</span>
+          <span class="badge brand">in motion — keep moving</span></div>
+        </div>
+      </li>
+      <li class="item">
+        <div class="item-main">
+          <div class="item-top"><span class="strong">SMS campaign</span>
+          <span class="badge brand">in motion — keep moving</span></div>
+        </div>
+      </li></ul>
+      </section>
+    </div>
+    <div class="panel" id="panel-library">
+      <button class="back" onclick="goHome()">← Back to overview</button>
+      <section class="card">
+        <div class="card-head"><span class="icon">🎓</span><h2>Knowledge library</h2>
+        <span class="count-pill">1</span></div>
+        <p class="sub">Walkthrough videos and how-tos for the WayGlobal system.</p>
+        <ul class="items"><li class="item"><div class="item-main"><div class="item-top"><span class="strong">WayGlobal software walkthrough (Loom) — first video for every $49-setup client</span> <span class="badge err">link pending</span></div></div></li></ul>
+      </section>
+    </div>
+    <div class="panel" id="panel-notes">
+      <button class="back" onclick="goHome()">← Back to overview</button>
+      <section class="card">
+        <div class="card-head"><span class="icon">📌</span><h2>Team notes</h2>
+        <span class="count-pill">3</span></div>
+        <p class="sub">Standing reminders — edit team_notes.json to change.</p>
+        <ul class="items"><li class="item note"><div class="item-main">Daily outbound goal (Wade, 7/14): 250 calls + 80 emails per day. If we&#x27;re short, flag WHY the same day — don&#x27;t wait to be asked.</div></li><li class="item note"><div class="item-main">Priority: anything that books an ACS walkthrough comes first.</div></li><li class="item note"><div class="item-main">Flag any client complaint to Jade the same day you see it.</div></li></ul>
+      </section>
+    </div>
+  </div>
+<script>
+function openPanel(id){
+  document.getElementById('overview').classList.add('closed');
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('open')});
+  var p=document.getElementById('panel-'+id);
+  if(p){p.classList.add('open');window.scrollTo(0,0);history.replaceState(null,'','#'+id);}
+}
+function goHome(){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('open')});
+  document.getElementById('overview').classList.remove('closed');
+  history.replaceState(null,'','#');
+  window.scrollTo(0,0);
+}
+if(location.hash.length>1){openPanel(location.hash.slice(1));}
+document.querySelectorAll('.item[data-key]').forEach(function(li){
+  var raw=li.getAttribute('data-key');
+  var key='ccdone:'+raw, nkey='ccnote:'+raw;
+  var box=li.querySelector('input.done');
+  if(!box)return;
+  var main=li.querySelector('.item-main');
+  function showNote(){
+    var old=main.querySelector('.proof'); if(old)old.remove();
+    var n=localStorage.getItem(nkey);
+    if(n){var s=document.createElement('span');s.className='proof';s.textContent='✓ '+n;main.appendChild(s);}
+  }
+  if(localStorage.getItem(key)==='1'){box.checked=true;li.classList.add('hidden-done');showNote();}
+  box.addEventListener('change',function(){
+    if(box.checked){
+      var note=prompt('Close the loop — what was DONE? (one line of proof)')||'';
+      localStorage.setItem(key,'1');
+      if(note)localStorage.setItem(nkey,note);
+      li.classList.add('hidden-done');showNote();
+    }else{
+      localStorage.removeItem(key);localStorage.removeItem(nkey);
+      li.classList.remove('hidden-done');showNote();
+    }
+  });
+});
+</script>
+</body></html>

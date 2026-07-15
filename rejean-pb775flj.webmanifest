@@ -1,0 +1,28 @@
+{
+  "name": "WadeGlobal HQ \u2014 Rejean",
+  "short_name": "HQ Rejean",
+  "description": "Rejean's daily WadeGlobal command center",
+  "start_url": "./rejean-pb775flj.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f9fc",
+  "theme_color": "#001F3F",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

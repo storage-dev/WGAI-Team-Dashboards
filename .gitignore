@@ -1,0 +1,3 @@
+# The index page links all three personal pages — publishing it would leak
+# the unguessable URLs. It stays local-only.
+index.html
