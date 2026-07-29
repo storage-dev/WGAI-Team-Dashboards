@@ -105,6 +105,46 @@ body{font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;backgroun
 .empty{font-size:13px;color:var(--ink-muted);background:var(--bg);border-radius:10px;padding:16px;line-height:1.6}
 .note{font-size:13px;color:var(--ink)}
 .foot{text-align:center;font-size:11.5px;color:var(--ink-muted);margin-top:30px;line-height:1.7}
+/* --- time clock --- */
+.clockcard{background:#fff;border:1px solid var(--line);border-top:3px solid var(--blue);border-radius:14px;
+padding:18px 22px;margin-bottom:20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.clockcard.on{border-top-color:#1f9d55}
+.clock-left{flex:1;min-width:200px}
+.clock-status{font-family:'Barlow Condensed','Inter',sans-serif;font-weight:600;font-size:21px;letter-spacing:.02em;
+text-transform:uppercase;display:flex;align-items:center;gap:9px}
+.clock-dot{width:10px;height:10px;border-radius:50%;background:var(--gray,#A0A0A0);flex:none}
+.clockcard.on .clock-dot{background:#1f9d55;box-shadow:0 0 0 4px rgba(31,157,85,.15)}
+.clock-sub{font-size:13px;color:var(--ink-muted);margin-top:5px;line-height:1.5}
+.clock-sub b{color:var(--navy);font-weight:600}
+.clock-btn{border:0;border-radius:10px;padding:13px 26px;font-family:inherit;font-size:14.5px;font-weight:600;
+color:#fff;background:var(--blue-deep);cursor:pointer;transition:background .15s}
+.clock-btn:hover:not(:disabled){background:var(--navy)}
+.clock-btn:disabled{opacity:.5;cursor:default}
+.clock-btn.out{background:#1f9d55}.clock-btn.out:hover:not(:disabled){background:#177a41}
+.clock-err{font-size:12px;color:#b4232a;margin-top:6px}
+/* --- manager roster --- */
+.roster{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-bottom:26px}
+.rcard{background:#fff;border:1px solid var(--line);border-top:3px solid var(--gray,#A0A0A0);border-radius:14px;padding:18px 20px}
+.rcard.on{border-top-color:#1f9d55}
+.rcard.missing{border-top-color:#d9534f}
+.rcard h3{font-family:'Barlow Condensed','Inter',sans-serif;font-weight:600;font-size:19px;letter-spacing:.02em;
+text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.rstate{font-size:12px;font-weight:600;margin-top:7px;color:var(--ink-muted)}
+.rcard.on .rstate{color:#177a41}
+.rcard.missing .rstate{color:#b4232a}
+.rtask{font-size:13.5px;margin-top:9px;line-height:1.5}
+.rhours{font-size:11.5px;color:var(--ink-muted);margin-top:11px;border-top:1px solid var(--line);padding-top:9px}
+.digest{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:22px}
+.digest h2{font-family:'Barlow Condensed','Inter',sans-serif;font-weight:600;font-size:20px;letter-spacing:.02em;
+text-transform:uppercase;margin-bottom:4px}
+.digest .sub{font-size:12.5px;color:var(--ink-muted);margin-bottom:14px}
+.dperson{border-top:1px solid var(--line);padding:13px 0}
+.dperson:first-of-type{border-top:0}
+.dname{font-weight:600;font-size:14.5px;display:flex;align-items:center;gap:7px}
+.dsess{font-size:13px;margin:7px 0 0 4px;padding-left:12px;border-left:2px solid var(--line);line-height:1.6}
+.dsess .when{color:var(--ink-muted);font-size:11.5px}
+.dsess .did{color:#177a41}
+.dnone{font-size:12.5px;color:var(--ink-muted);margin-top:5px}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 @media(max-width:600px){.wrap{padding:22px 14px}.tiles{grid-template-columns:1fr}.head h1{font-size:26px}}
 </style></head>
@@ -114,13 +154,22 @@ body{font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;backgroun
     <div class="wordmark">WadeGlobal <span>AI</span></div>
     <span class="divider">|</span>
     <div class="who">🧭 <b>Jade</b> · Operations &amp; Finance — all brands</div>
-    <div class="others"><a href="https://storage-dev.github.io/WGAI-Team-Dashboards/rejean-pb775flj.html">🧹 Rejean</a><a href="https://storage-dev.github.io/WGAI-Team-Dashboards/chloe-afski1ns.html">📣 Chloe</a></div>
+    <div class="others"><a href="https://storage-dev.github.io/WGAI-Team-Dashboards/rejean-pb775flj.html">🧹 Rejean</a><a href="https://storage-dev.github.io/WGAI-Team-Dashboards/chloe-afski1ns.html">📣 Chloe</a><a href="https://storage-dev.github.io/WGAI-Team-Dashboards/wade-7v68jvu2.html">👔 Roster</a></div>
   </div>
   <div class="wrap">
     <div id="overview">
       <div class="head">
         <h1>Good day, Jade 👋</h1>
-        <div class="date">Sun Jul 26, 2026 · 01:52 AM CT · tap a section to see what's inside</div>
+        <div class="date">Wed Jul 29, 2026 · 01:58 AM CT · tap a section to see what's inside</div>
+      </div>
+      
+      <div class="clockcard" id="clockcard" data-person="jade">
+        <div class="clock-left">
+          <div class="clock-status"><span class="clock-dot"></span><span id="clockStatus">Checking the clock…</span></div>
+          <div class="clock-sub" id="clockSub"></div>
+          <div class="clock-err" id="clockErr"></div>
+        </div>
+        <button class="clock-btn" id="clockBtn" disabled>…</button>
       </div>
       
       <div class="tiles">
@@ -132,7 +181,7 @@ body{font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;backgroun
       </button>
       <button class="tile" onclick="openPanel('inbox')">
         <div class="row1"><div class="icon">🔔</div><h3>Company brain &amp; notifications</h3>
-        <span class="count">2</span></div>
+        <span class="count">3</span></div>
         <p>What the agents built, Notion changes, Slack and other tools — newest first.</p>
         <span class="open">View →</span>
       </button>
@@ -144,7 +193,7 @@ body{font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;backgroun
       </button>
       <button class="tile" onclick="openPanel('messages')">
         <div class="row1"><div class="icon">💬</div><h3>Unread messages</h3>
-        <span class="count">45</span></div>
+        <span class="count">46</span></div>
         <p>Your client conversations — WGAI &amp; Coaching, direct channels (social is Chloe&#x27;s, ACS is Rejean&#x27;s).</p>
         <span class="open">View →</span>
       </button>
@@ -200,43 +249,43 @@ body{font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;backgroun
       <li class="item" data-key="act-n8n-ACS · Ops 07 — MCWC The Nations Event Inbox Alerts">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
-          <div class="item-top"><span class="badge brand">2</span> <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820609" target="_blank" rel="noopener">Fix or escalate automation &#x27;ACS · Ops 07 — MCWC The Nations Event Inbox Alerts&#x27; — failed 42× in 48h</a></div>
+          <div class="item-top"><span class="badge brand">2</span> <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824690" target="_blank" rel="noopener">Fix or escalate automation &#x27;ACS · Ops 07 — MCWC The Nations Event Inbox Alerts&#x27; — failed 38× in 48h</a></div>
+          <div class="item-body">Repeated failures mean a system is silently not doing its job.</div>
+        </div>
+      </li>
+      <li class="item" data-key="act-n8n-WGAI → Ops 07 → Team Time Clock (Punch + Feed)">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top"><span class="badge brand">3</span> <a href="https://n8n.wadeglobal.ai/workflow/jleqR9lj7K0OtKkl/executions/824701" target="_blank" rel="noopener">Fix or escalate automation &#x27;WGAI → Ops 07 → Team Time Clock (Punch + Feed)&#x27; — failed 5× in 48h</a></div>
           <div class="item-body">Repeated failures mean a system is silently not doing its job.</div>
         </div>
       </li>
       <li class="item" data-key="act-n8n-SYS · Agent 01 — Personal Inbox v2">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
-          <div class="item-top"><span class="badge brand">3</span> <a href="https://n8n.wadeglobal.ai/workflow/ZsLrcUM4UAG1myDg/executions/820393" target="_blank" rel="noopener">Fix or escalate automation &#x27;SYS · Agent 01 — Personal Inbox v2&#x27; — failed 6× in 48h</a></div>
+          <div class="item-top"><span class="badge brand">4</span> <a href="https://n8n.wadeglobal.ai/workflow/ZsLrcUM4UAG1myDg/executions/824527" target="_blank" rel="noopener">Fix or escalate automation &#x27;SYS · Agent 01 — Personal Inbox v2&#x27; — failed 3× in 48h</a></div>
           <div class="item-body">Repeated failures mean a system is silently not doing its job.</div>
-        </div>
-      </li>
-      <li class="item" data-key="act-msg-RcfrcOOacMegvNox2pwy">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top"><span class="badge brand">4</span> <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/conversations/conversations/RcfrcOOacMegvNox2pwy" target="_blank" rel="noopener">Reply to Suzanne Leonard (Email, 1 unread)</a></div>
-          <div class="item-body">Waiting 3d ago — WadeGlobal AI.</div>
         </div>
       </li>
       <li class="item" data-key="act-msg-sX1U8fgxM6fJkCN0pUeF">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top"><span class="badge brand">5</span> <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/conversations/conversations/sX1U8fgxM6fJkCN0pUeF" target="_blank" rel="noopener">Reply to REYNA COTA (Call, 1 unread)</a></div>
-          <div class="item-body">Waiting 12d ago — WadeGlobal AI.</div>
+          <div class="item-body">Waiting 15d ago — WadeGlobal AI.</div>
         </div>
       </li>
       <li class="item" data-key="act-msg-cR1Z68509EJ2a2zlbb1K">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top"><span class="badge brand">6</span> <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/conversations/conversations/cR1Z68509EJ2a2zlbb1K" target="_blank" rel="noopener">Reply to Jim Morris (SMS, 1 unread)</a></div>
-          <div class="item-body">Waiting 84d ago — WadeGlobal AI.</div>
+          <div class="item-body">Waiting 87d ago — WadeGlobal AI.</div>
         </div>
       </li>
       <li class="item" data-key="act-msg-202ub6oLct9igpUng6J5">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top"><span class="badge brand">7</span> <a href="https://app.gohighlevel.com/v2/location/rfUOqNNuHceIdzMwE08M/conversations/conversations/202ub6oLct9igpUng6J5" target="_blank" rel="noopener">Reply to Victoria Rhodes (Email, 1 unread)</a></div>
-          <div class="item-body">Waiting 300d ago — W.A.D.E. Coaching.</div>
+          <div class="item-body">Waiting 303d ago — W.A.D.E. Coaching.</div>
         </div>
       </li></ul>
       </section>
@@ -245,17 +294,27 @@ body{font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;backgroun
       <button class="back" onclick="goHome()">← Back to overview</button>
       <section class="card">
         <div class="card-head"><span class="icon">🔔</span><h2>Company brain &amp; notifications</h2>
-        <span class="count-pill">2</span></div>
+        <span class="count-pill">3</span></div>
         <p class="sub">What the agents built, Notion changes, Slack and other tools — newest first.</p>
-        <div class="coach"><span class="bulb">Agent read</span> 2 update(s) from the agents and tools in the last 48h. Skim — act only on what changes today.</div>
+        <div class="coach"><span class="bulb">Agent read</span> 3 update(s) from the agents and tools in the last 48h. Skim — act only on what changes today.</div>
         <ul class="items">
-      <li class="item" data-key="feed-agent-os: test(jarvis): add live marketing acceptance-">
+      <li class="item" data-key="feed-agent-os: fix: stop claiming per-agent brains that do not exist-">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
-          <div class="item-top"><a href="https://github.com/storage-dev/agent-os/commit/d4389326e6d2e055917bf7b3df4235507866f951" target="_blank" rel="noopener">agent-os: test(jarvis): add live marketing acceptance</a>
+          <div class="item-top"><a href="https://github.com/storage-dev/agent-os/commit/83da8572fbe5411ae473a72e4f1e25cd980152f7" target="_blank" rel="noopener">agent-os: fix: stop claiming per-agent brains that do not exist</a>
             <span class="badge chan">agents</span>
-            <span class="when">33m ago</span></div>
+            <span class="when">3m ago</span></div>
           <div class="item-body">Latest commit by William Wade.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Agent work landed — skim it; if it changes your plan today, act, otherwise just know it exists.</div>
+        </div>
+      </li>
+      <li class="item" data-key="feed-wgai-agent-skills: Fix Skillboss ecommerce template vulnerabilities-">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top"><a href="https://github.com/storage-dev/wgai-agent-skills/commit/30778873f0b43292a821036fe651c18147399bd6" target="_blank" rel="noopener">wgai-agent-skills: Fix Skillboss ecommerce template vulnerabilities</a>
+            <span class="badge chan">agents</span>
+            <span class="when">1h ago</span></div>
+          <div class="item-body">Latest commit by WadeGlobal AI.</div>
           <div class="suggest"><span class="bulb">Agent suggests</span> Agent work landed — skim it; if it changes your plan today, act, otherwise just know it exists.</div>
         </div>
       </li>
@@ -264,7 +323,7 @@ body{font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;backgroun
         <div class="item-main">
           <div class="item-top"><a href="https://github.com/storage-dev/team-dashboard-feeds" target="_blank" rel="noopener">Agent feed channel is live</a>
             <span class="badge chan">agents</span>
-            <span class="when">9d ago</span></div>
+            <span class="when">12d ago</span></div>
           <div class="item-body">Agents: push your updates to this repo per the README and they appear on the team dashboards.</div>
           <div class="suggest"><span class="bulb">Agent suggests</span> Agent work landed — skim it; if it changes your plan today, act, otherwise just know it exists.</div>
         </div>
@@ -277,556 +336,556 @@ body{font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;backgroun
         <div class="card-head"><span class="icon">🚨</span><h2>System alerts</h2>
         <span class="count-pill">50</span></div>
         <p class="sub">n8n automation runs that failed in the last 48 hours.</p>
-        <div class="coach"><span class="bulb">Agent read</span> 2 workflow(s) failed 3+ times — those are genuinely broken. Start there, ignore the one-offs.</div>
+        <div class="coach"><span class="bulb">Agent read</span> 3 workflow(s) failed 3+ times — those are genuinely broken. Start there, ignore the one-offs.</div>
         <ul class="items">
-      <li class="item" data-key="n8n-820609">
+      <li class="item" data-key="n8n-824701">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820609" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
-            <span class="when">7m ago</span>
+            <a href="https://n8n.wadeglobal.ai/workflow/jleqR9lj7K0OtKkl/executions/824701" target="_blank" rel="noopener">WGAI → Ops 07 → Team Time Clock (Punch + Feed)</a>
+            <span class="badge err">5× in 48h</span>
+            <span class="when">2m ago</span>
           </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 5× in 48h — that&#x27;s real breakage, not a blip. Ask Garrick to repair it and send proof.</div>
         </div>
       </li>
-      <li class="item" data-key="n8n-820602">
+      <li class="item" data-key="n8n-824700">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820602" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
-            <span class="when">22m ago</span>
+            <a href="https://n8n.wadeglobal.ai/workflow/jleqR9lj7K0OtKkl/executions/824700" target="_blank" rel="noopener">WGAI → Ops 07 → Team Time Clock (Punch + Feed)</a>
+            <span class="badge err">5× in 48h</span>
+            <span class="when">4m ago</span>
           </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 5× in 48h — that&#x27;s real breakage, not a blip. Ask Garrick to repair it and send proof.</div>
         </div>
       </li>
-      <li class="item" data-key="n8n-820594">
+      <li class="item" data-key="n8n-824699">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820594" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
-            <span class="when">37m ago</span>
+            <a href="https://n8n.wadeglobal.ai/workflow/jleqR9lj7K0OtKkl/executions/824699" target="_blank" rel="noopener">WGAI → Ops 07 → Team Time Clock (Punch + Feed)</a>
+            <span class="badge err">5× in 48h</span>
+            <span class="when">5m ago</span>
           </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 5× in 48h — that&#x27;s real breakage, not a blip. Ask Garrick to repair it and send proof.</div>
         </div>
       </li>
-      <li class="item" data-key="n8n-820583">
+      <li class="item" data-key="n8n-824698">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820583" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
-            <span class="when">52m ago</span>
+            <a href="https://n8n.wadeglobal.ai/workflow/jleqR9lj7K0OtKkl/executions/824698" target="_blank" rel="noopener">WGAI → Ops 07 → Team Time Clock (Punch + Feed)</a>
+            <span class="badge err">5× in 48h</span>
+            <span class="when">6m ago</span>
           </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 5× in 48h — that&#x27;s real breakage, not a blip. Ask Garrick to repair it and send proof.</div>
         </div>
       </li>
-      <li class="item" data-key="n8n-820575">
+      <li class="item" data-key="n8n-824690">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820575" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824690" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
+            <span class="when">13m ago</span>
+          </div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-824665">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824665" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
+            <span class="when">28m ago</span>
+          </div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-824635">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824635" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
+            <span class="when">43m ago</span>
+          </div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-824624">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/jleqR9lj7K0OtKkl/executions/824624" target="_blank" rel="noopener">WGAI → Ops 07 → Team Time Clock (Punch + Feed)</a>
+            <span class="badge err">5× in 48h</span>
+            <span class="when">44m ago</span>
+          </div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 5× in 48h — that&#x27;s real breakage, not a blip. Ask Garrick to repair it and send proof.</div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-824615">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824615" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
+            <span class="when">58m ago</span>
+          </div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-824608">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824608" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
             <span class="when">1h ago</span>
           </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
         </div>
       </li>
-      <li class="item" data-key="n8n-820564">
+      <li class="item" data-key="n8n-824600">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820564" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824600" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
             <span class="when">1h ago</span>
           </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
         </div>
       </li>
-      <li class="item" data-key="n8n-820556">
+      <li class="item" data-key="n8n-824592">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820556" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824592" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
             <span class="when">1h ago</span>
           </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
         </div>
       </li>
-      <li class="item" data-key="n8n-820544">
+      <li class="item" data-key="n8n-824582">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820544" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824582" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
             <span class="when">1h ago</span>
           </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
         </div>
       </li>
-      <li class="item" data-key="n8n-820537">
+      <li class="item" data-key="n8n-824572">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820537" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824572" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
             <span class="when">2h ago</span>
           </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
         </div>
       </li>
-      <li class="item" data-key="n8n-820527">
+      <li class="item" data-key="n8n-824563">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820527" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824563" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
             <span class="when">2h ago</span>
           </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
         </div>
       </li>
-      <li class="item" data-key="n8n-820517">
+      <li class="item" data-key="n8n-824555">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820517" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824555" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
             <span class="when">2h ago</span>
           </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
         </div>
       </li>
-      <li class="item" data-key="n8n-820500">
+      <li class="item" data-key="n8n-824539">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820500" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824539" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
             <span class="when">2h ago</span>
           </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
         </div>
       </li>
-      <li class="item" data-key="n8n-820494">
+      <li class="item" data-key="n8n-824533">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820494" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824533" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
             <span class="when">3h ago</span>
           </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
         </div>
       </li>
-      <li class="item" data-key="n8n-820487">
+      <li class="item" data-key="n8n-824527">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820487" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
+            <a href="https://n8n.wadeglobal.ai/workflow/ZsLrcUM4UAG1myDg/executions/824527" target="_blank" rel="noopener">SYS · Agent 01 — Personal Inbox v2</a>
+            <span class="badge err">3× in 48h</span>
             <span class="when">3h ago</span>
           </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 3× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
         </div>
       </li>
-      <li class="item" data-key="n8n-820478">
+      <li class="item" data-key="n8n-824525">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820478" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
+            <a href="https://n8n.wadeglobal.ai/workflow/ZsLrcUM4UAG1myDg/executions/824525" target="_blank" rel="noopener">SYS · Agent 01 — Personal Inbox v2</a>
+            <span class="badge err">3× in 48h</span>
             <span class="when">3h ago</span>
           </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 3× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
         </div>
       </li>
-      <li class="item" data-key="n8n-820463">
+      <li class="item" data-key="n8n-824521">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820463" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824521" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
             <span class="when">3h ago</span>
           </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
         </div>
       </li>
-      <li class="item" data-key="n8n-820454">
+      <li class="item" data-key="n8n-824513">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820454" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824513" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
+            <span class="when">3h ago</span>
+          </div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-824502">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824502" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
+            <span class="when">3h ago</span>
+          </div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-824489">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824489" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
             <span class="when">4h ago</span>
           </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
         </div>
       </li>
-      <li class="item" data-key="n8n-820443">
+      <li class="item" data-key="n8n-824480">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820443" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824480" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
             <span class="when">4h ago</span>
           </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
         </div>
       </li>
-      <li class="item" data-key="n8n-820434">
+      <li class="item" data-key="n8n-824467">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820434" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824467" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
             <span class="when">4h ago</span>
           </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
         </div>
       </li>
-      <li class="item" data-key="n8n-820425">
+      <li class="item" data-key="n8n-824457">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820425" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824457" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
             <span class="when">4h ago</span>
           </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
         </div>
       </li>
-      <li class="item" data-key="n8n-820419">
+      <li class="item" data-key="n8n-824449">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820419" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824449" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
             <span class="when">5h ago</span>
           </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
         </div>
       </li>
-      <li class="item" data-key="n8n-820410">
+      <li class="item" data-key="n8n-824444">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820410" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
-            <span class="when">5h ago</span>
-          </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
-        </div>
-      </li>
-      <li class="item" data-key="n8n-820400">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820400" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
-            <span class="when">5h ago</span>
-          </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
-        </div>
-      </li>
-      <li class="item" data-key="n8n-820393">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/ZsLrcUM4UAG1myDg/executions/820393" target="_blank" rel="noopener">SYS · Agent 01 — Personal Inbox v2</a>
-            <span class="badge err">6× in 48h</span>
-            <span class="when">5h ago</span>
-          </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 6× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
-        </div>
-      </li>
-      <li class="item" data-key="n8n-820386">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820386" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
-            <span class="when">5h ago</span>
-          </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
-        </div>
-      </li>
-      <li class="item" data-key="n8n-820378">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/I6oYkX2Rk4I1fdkU/executions/820378" target="_blank" rel="noopener">WGAI · Event — Audit Form Intake</a>
+            <a href="https://n8n.wadeglobal.ai/workflow/GvPAnUIXhgyhmx3i/executions/824444" target="_blank" rel="noopener">TG · W01 — Walkthrough Submission Handler</a>
             <span class="badge err">2× in 48h</span>
+            <span class="when">5h ago</span>
+          </div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Single failure — open the run log; if it&#x27;s a one-off timeout, no action needed.</div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-824436">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824436" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
+            <span class="when">5h ago</span>
+          </div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-824427">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824427" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
+            <span class="when">5h ago</span>
+          </div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-824414">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824414" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
+            <span class="when">5h ago</span>
+          </div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-824412">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/KOfeBuI09zX0dODY/executions/824412" target="_blank" rel="noopener">SYS · Loop I-01 — n8n Error Digest</a>
+            <span class="badge err">failed</span>
+            <span class="when">5h ago</span>
+          </div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Single failure — open the run log; if it&#x27;s a one-off timeout, no action needed.</div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-824403">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824403" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
+            <span class="when">6h ago</span>
+          </div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-824395">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824395" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
+            <span class="when">6h ago</span>
+          </div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-824384">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824384" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
+            <span class="when">6h ago</span>
+          </div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-824376">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/dfpa90r3sXgEoBhN/executions/824376" target="_blank" rel="noopener">WGAI · Lead 02 — Deduplication Check</a>
+            <span class="badge err">failed</span>
             <span class="when">6h ago</span>
           </div>
           <div class="suggest"><span class="bulb">Agent suggests</span> Single failure — open the run log; if it&#x27;s a one-off timeout, no action needed.</div>
         </div>
       </li>
-      <li class="item" data-key="n8n-820374">
+      <li class="item" data-key="n8n-824368">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820374" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824368" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
             <span class="when">6h ago</span>
           </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
         </div>
       </li>
-      <li class="item" data-key="n8n-820366">
+      <li class="item" data-key="n8n-824358">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820366" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
-            <span class="when">6h ago</span>
-          </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
-        </div>
-      </li>
-      <li class="item" data-key="n8n-820356">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820356" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
-            <span class="when">6h ago</span>
-          </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
-        </div>
-      </li>
-      <li class="item" data-key="n8n-820343">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820343" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
-            <span class="when">6h ago</span>
-          </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
-        </div>
-      </li>
-      <li class="item" data-key="n8n-820329">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820329" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824358" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
             <span class="when">7h ago</span>
           </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
         </div>
       </li>
-      <li class="item" data-key="n8n-820322">
+      <li class="item" data-key="n8n-824352">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/ZsLrcUM4UAG1myDg/executions/820322" target="_blank" rel="noopener">SYS · Agent 01 — Personal Inbox v2</a>
-            <span class="badge err">6× in 48h</span>
-            <span class="when">7h ago</span>
-          </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 6× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
-        </div>
-      </li>
-      <li class="item" data-key="n8n-820318">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/ZsLrcUM4UAG1myDg/executions/820318" target="_blank" rel="noopener">SYS · Agent 01 — Personal Inbox v2</a>
-            <span class="badge err">6× in 48h</span>
-            <span class="when">7h ago</span>
-          </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 6× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
-        </div>
-      </li>
-      <li class="item" data-key="n8n-820317">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820317" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
-            <span class="when">7h ago</span>
-          </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
-        </div>
-      </li>
-      <li class="item" data-key="n8n-820313">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/ZsLrcUM4UAG1myDg/executions/820313" target="_blank" rel="noopener">SYS · Agent 01 — Personal Inbox v2</a>
-            <span class="badge err">6× in 48h</span>
-            <span class="when">7h ago</span>
-          </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 6× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
-        </div>
-      </li>
-      <li class="item" data-key="n8n-820312">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/ZsLrcUM4UAG1myDg/executions/820312" target="_blank" rel="noopener">SYS · Agent 01 — Personal Inbox v2</a>
-            <span class="badge err">6× in 48h</span>
-            <span class="when">7h ago</span>
-          </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 6× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
-        </div>
-      </li>
-      <li class="item" data-key="n8n-820306">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820306" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
-            <span class="when">7h ago</span>
-          </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
-        </div>
-      </li>
-      <li class="item" data-key="n8n-820291">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820291" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
-            <span class="when">7h ago</span>
-          </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
-        </div>
-      </li>
-      <li class="item" data-key="n8n-820283">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820283" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
-            <span class="when">8h ago</span>
-          </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
-        </div>
-      </li>
-      <li class="item" data-key="n8n-820275">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820275" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
-            <span class="when">8h ago</span>
-          </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
-        </div>
-      </li>
-      <li class="item" data-key="n8n-820265">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820265" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
-            <span class="when">8h ago</span>
-          </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
-        </div>
-      </li>
-      <li class="item" data-key="n8n-820249">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820249" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
-            <span class="when">8h ago</span>
-          </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
-        </div>
-      </li>
-      <li class="item" data-key="n8n-820242">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820242" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
-            <span class="when">9h ago</span>
-          </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
-        </div>
-      </li>
-      <li class="item" data-key="n8n-820234">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820234" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
-            <span class="when">9h ago</span>
-          </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
-        </div>
-      </li>
-      <li class="item" data-key="n8n-820226">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820226" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
-            <span class="when">9h ago</span>
-          </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
-        </div>
-      </li>
-      <li class="item" data-key="n8n-820212">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820212" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
-            <span class="when">9h ago</span>
-          </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
-        </div>
-      </li>
-      <li class="item" data-key="n8n-820203">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/ZsLrcUM4UAG1myDg/executions/820203" target="_blank" rel="noopener">SYS · Agent 01 — Personal Inbox v2</a>
-            <span class="badge err">6× in 48h</span>
-            <span class="when">10h ago</span>
-          </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 6× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
-        </div>
-      </li>
-      <li class="item" data-key="n8n-820202">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820202" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
-            <span class="when">10h ago</span>
-          </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
-        </div>
-      </li>
-      <li class="item" data-key="n8n-820193">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/I6oYkX2Rk4I1fdkU/executions/820193" target="_blank" rel="noopener">WGAI · Event — Audit Form Intake</a>
+            <a href="https://n8n.wadeglobal.ai/workflow/GvPAnUIXhgyhmx3i/executions/824352" target="_blank" rel="noopener">TG · W01 — Walkthrough Submission Handler</a>
             <span class="badge err">2× in 48h</span>
-            <span class="when">10h ago</span>
+            <span class="when">7h ago</span>
           </div>
           <div class="suggest"><span class="bulb">Agent suggests</span> Single failure — open the run log; if it&#x27;s a one-off timeout, no action needed.</div>
         </div>
       </li>
-      <li class="item" data-key="n8n-820192">
+      <li class="item" data-key="n8n-824349">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
-            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/820192" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
-            <span class="badge err">42× in 48h</span>
-            <span class="when">10h ago</span>
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824349" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
+            <span class="when">7h ago</span>
           </div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 42× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-824337">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824337" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
+            <span class="when">7h ago</span>
+          </div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-824322">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824322" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
+            <span class="when">7h ago</span>
+          </div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-824309">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824309" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
+            <span class="when">8h ago</span>
+          </div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-824308">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/ZsLrcUM4UAG1myDg/executions/824308" target="_blank" rel="noopener">SYS · Agent 01 — Personal Inbox v2</a>
+            <span class="badge err">3× in 48h</span>
+            <span class="when">8h ago</span>
+          </div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 3× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-824298">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824298" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
+            <span class="when">8h ago</span>
+          </div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-824289">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824289" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
+            <span class="when">8h ago</span>
+          </div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-824269">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824269" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
+            <span class="when">8h ago</span>
+          </div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-824257">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824257" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
+            <span class="when">9h ago</span>
+          </div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
+        </div>
+      </li>
+      <li class="item" data-key="n8n-824248">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://n8n.wadeglobal.ai/workflow/NkM278Y45rgIIFhZ/executions/824248" target="_blank" rel="noopener">ACS · Ops 07 — MCWC The Nations Event Inbox Alerts</a>
+            <span class="badge err">38× in 48h</span>
+            <span class="when">9h ago</span>
+          </div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Failed 38× — email/inbox automation is down, so support tickets and replies are silently dropping. Ask Garrick to repair it and send proof.</div>
         </div>
       </li></ul>
       </section>
@@ -835,26 +894,36 @@ body{font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;backgroun
       <button class="back" onclick="goHome()">← Back to overview</button>
       <section class="card">
         <div class="card-head"><span class="icon">💬</span><h2>Unread messages</h2>
-        <span class="count-pill">45</span></div>
+        <span class="count-pill">46</span></div>
         <p class="sub">Your client conversations — WGAI &amp; Coaching, direct channels (social is Chloe&#x27;s, ACS is Rejean&#x27;s).</p>
-        <div class="coach"><span class="bulb">Agent read</span> 45 waiting, oldest 933d. Answer the oldest first — those are closest to churn.</div>
+        <div class="coach"><span class="bulb">Agent read</span> 46 waiting, oldest 936d. Answer the oldest first — those are closest to churn.</div>
         <ul class="items">
       <li class="item" data-key="convo-RcfrcOOacMegvNox2pwy">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
           <div class="item-top">
             <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/conversations/conversations/RcfrcOOacMegvNox2pwy" target="_blank" rel="noopener">Suzanne Leonard</a>
-            <span class="badge chan">Email</span>
+            <span class="badge chan">SMS</span>
             <span class="badge brand">WadeGlobal AI</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">3d ago</span>
+            <span class="when">7h ago</span>
           </div>
-          <div class="item-body">Hi Suzanne,
-
-Your WadeGlobal AI consultation is confirmed for July 28, 2026 at 2:00 PM.
-
-Please bring the bigg…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Waiting 3d — answer today. Wants to book — offer two concrete time slots and send the calendar link.</div>
+          <div class="item-body">Your WadeGlobal AI consultation starts in 15 minutes. We&#x27;ll see you shortly.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Wants to book — offer two concrete time slots and send the calendar link.</div>
+        </div>
+      </li>
+      <li class="item" data-key="convo-gDlf468NFdW2mD82SBHB">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/conversations/conversations/gDlf468NFdW2mD82SBHB" target="_blank" rel="noopener">Guest Visitor 002</a>
+            <span class="badge chan">Call</span>
+            <span class="badge brand">WadeGlobal AI</span>
+            <span class="badge unread">1 unread</span>
+            <span class="when">1d ago</span>
+          </div>
+          <div class="item-body"><i>(no preview)</i></div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Missed/inbound call — call back today and log the outcome in the CRM.</div>
         </div>
       </li>
       <li class="item" data-key="convo-sX1U8fgxM6fJkCN0pUeF">
@@ -865,7 +934,7 @@ Please bring the bigg…</div>
             <span class="badge chan">Call</span>
             <span class="badge brand">WadeGlobal AI</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">12d ago</span>
+            <span class="when">15d ago</span>
           </div>
           <div class="item-body"><i>(no preview)</i></div>
           <div class="suggest"><span class="bulb">Agent suggests</span> Missed/inbound call — call back today and log the outcome in the CRM.</div>
@@ -879,10 +948,10 @@ Please bring the bigg…</div>
             <span class="badge chan">SMS</span>
             <span class="badge brand">WadeGlobal AI</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">84d ago</span>
+            <span class="when">87d ago</span>
           </div>
           <div class="item-body">EXECUTION</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 84d — open by owning the delay, then: reply with a direct answer and one clear next step.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 87d — open by owning the delay, then: reply with a direct answer and one clear next step.</div>
         </div>
       </li>
       <li class="item" data-key="convo-202ub6oLct9igpUng6J5">
@@ -893,7 +962,7 @@ Please bring the bigg…</div>
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">300d ago</span>
+            <span class="when">303d ago</span>
           </div>
           <div class="item-body">Good evening,
 I apologize I just saw this. We can schedule a meeting soon.
@@ -904,7 +973,7 @@ I apologize I just saw this. We can schedule a meeting soon.
 Thanks
 
 On Fri, Sep 26, 2025 at…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 300d — open by owning the delay, then: opt-out/refund request — action it today and make sure the CRM tags match, or we keep messaging them. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 303d — open by owning the delay, then: opt-out/refund request — action it today and make sure the CRM tags match, or we keep messaging them. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-pZu384XwYSB07XsP1WwO">
@@ -915,12 +984,12 @@ On Fri, Sep 26, 2025 at…</div>
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">302d ago</span>
+            <span class="when">305d ago</span>
           </div>
           <div class="item-body">[https://storage.googleapis.com/msgsndr/rfUOqNNuHceIdzMwE08M/media/665721d214fedb620c933f66.jpeg]
 
 Hey Marquar…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 302d — open by owning the delay, then: wants to book — offer two concrete time slots and send the calendar link. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 305d — open by owning the delay, then: wants to book — offer two concrete time slots and send the calendar link. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-3eA6RdkxaDZqYgPmJg2Z">
@@ -931,13 +1000,13 @@ Hey Marquar…</div>
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">481d ago</span>
+            <span class="when">484d ago</span>
           </div>
           <div class="item-body">[https://storage.googleapis.com/msgsndr/rfUOqNNuHceIdzMwE08M/media/665721d214fedb620c933f66.jpeg]
 
 Hey Cesar,
 …</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 481d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 484d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-y2WWkzyvSkI8I7JsVTaH">
@@ -948,12 +1017,12 @@ Hey Cesar,
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">481d ago</span>
+            <span class="when">484d ago</span>
           </div>
           <div class="item-body">[https://storage.googleapis.com/msgsndr/rfUOqNNuHceIdzMwE08M/media/665721d214fedb620c933f66.jpeg]
 
 Hey Donnell…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 481d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 484d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-jviNSARTLYGd89C81j0z">
@@ -964,12 +1033,12 @@ Hey Donnell…</div>
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">481d ago</span>
+            <span class="when">484d ago</span>
           </div>
           <div class="item-body">[https://storage.googleapis.com/msgsndr/rfUOqNNuHceIdzMwE08M/media/665721d214fedb620c933f66.jpeg]
 
 Hey Kendall…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 481d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 484d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-kRgnyppvlui8QQAhDael">
@@ -980,12 +1049,12 @@ Hey Kendall…</div>
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">481d ago</span>
+            <span class="when">484d ago</span>
           </div>
           <div class="item-body">[https://storage.googleapis.com/msgsndr/rfUOqNNuHceIdzMwE08M/media/665721d214fedb620c933f66.jpeg]
 
 Hey Dedrick…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 481d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 484d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-RXUCbFw3JASCFKY7lffX">
@@ -996,12 +1065,12 @@ Hey Dedrick…</div>
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">481d ago</span>
+            <span class="when">484d ago</span>
           </div>
           <div class="item-body">[https://storage.googleapis.com/msgsndr/rfUOqNNuHceIdzMwE08M/media/665721d214fedb620c933f66.jpeg]
 
 Hey Vanessa…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 481d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 484d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-6e2hrFRx6esNFB0Gkz29">
@@ -1012,12 +1081,12 @@ Hey Vanessa…</div>
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">481d ago</span>
+            <span class="when">484d ago</span>
           </div>
           <div class="item-body">[https://storage.googleapis.com/msgsndr/rfUOqNNuHceIdzMwE08M/media/665721d214fedb620c933f66.jpeg]
 
 Hey Angelit…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 481d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 484d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-0l1kNeVGJ3s6HKsWkjI2">
@@ -1028,12 +1097,12 @@ Hey Angelit…</div>
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">481d ago</span>
+            <span class="when">484d ago</span>
           </div>
           <div class="item-body">[https://storage.googleapis.com/msgsndr/rfUOqNNuHceIdzMwE08M/media/665721d214fedb620c933f66.jpeg]
 
 Hey Sierra,…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 481d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 484d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-zkQn339CdaxOYuU4abC4">
@@ -1044,12 +1113,12 @@ Hey Sierra,…</div>
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">481d ago</span>
+            <span class="when">484d ago</span>
           </div>
           <div class="item-body">[https://storage.googleapis.com/msgsndr/rfUOqNNuHceIdzMwE08M/media/665721d214fedb620c933f66.jpeg]
 
 Hey Julian,…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 481d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 484d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-encPJfa0PhofK8Qq115s">
@@ -1060,13 +1129,13 @@ Hey Julian,…</div>
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">481d ago</span>
+            <span class="when">484d ago</span>
           </div>
           <div class="item-body">[https://storage.googleapis.com/msgsndr/rfUOqNNuHceIdzMwE08M/media/665721d214fedb620c933f66.jpeg]
 
 Hey David,
 …</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 481d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 484d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-Ak093cgt6wdOqftjFL0p">
@@ -1077,12 +1146,12 @@ Hey David,
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">481d ago</span>
+            <span class="when">484d ago</span>
           </div>
           <div class="item-body">[https://storage.googleapis.com/msgsndr/rfUOqNNuHceIdzMwE08M/media/665721d214fedb620c933f66.jpeg]
 
 Hey Shonta,…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 481d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 484d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-bB88mQRQrqEdBny1y5HX">
@@ -1093,12 +1162,12 @@ Hey Shonta,…</div>
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">490d ago</span>
+            <span class="when">493d ago</span>
           </div>
           <div class="item-body">[https://storage.googleapis.com/msgsndr/rfUOqNNuHceIdzMwE08M/media/665721d214fedb620c933f66.jpeg]
 
 Hey Vanrine…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 490d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 493d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-Ak1GgP2Q2WHdxIhJ7PFr">
@@ -1109,12 +1178,12 @@ Hey Vanrine…</div>
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">490d ago</span>
+            <span class="when">493d ago</span>
           </div>
           <div class="item-body">[https://storage.googleapis.com/msgsndr/rfUOqNNuHceIdzMwE08M/media/665721d214fedb620c933f66.jpeg]
 
 Hey Taurus,…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 490d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 493d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-FqVRZTWjX5tvPG655yix">
@@ -1125,13 +1194,13 @@ Hey Taurus,…</div>
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">500d ago</span>
+            <span class="when">503d ago</span>
           </div>
           <div class="item-body">[https://storage.googleapis.com/msgsndr/rfUOqNNuHceIdzMwE08M/media/665721d214fedb620c933f66.jpeg]
 
 Hey Stacy,
 …</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 500d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 503d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-4ra53IA8pyB9FepZaDXH">
@@ -1142,12 +1211,12 @@ Hey Stacy,
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">500d ago</span>
+            <span class="when">503d ago</span>
           </div>
           <div class="item-body">[https://storage.googleapis.com/msgsndr/rfUOqNNuHceIdzMwE08M/media/665721d214fedb620c933f66.jpeg]
 
 Hey Steven,…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 500d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 503d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-8ofR2abYUPNqvQXVSuMF">
@@ -1158,14 +1227,14 @@ Hey Steven,…</div>
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">500d ago</span>
+            <span class="when">503d ago</span>
           </div>
           <div class="item-body">[https://storage.googleapis.com/msgsndr/rfUOqNNuHceIdzMwE08M/media/665721d214fedb620c933f66.jpeg]
 
 Hey Tara,
 
 …</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 500d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 503d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-Hv3tcv11hzqIj77xWHSg">
@@ -1176,12 +1245,12 @@ Hey Tara,
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">500d ago</span>
+            <span class="when">503d ago</span>
           </div>
           <div class="item-body">[https://storage.googleapis.com/msgsndr/rfUOqNNuHceIdzMwE08M/media/665721d214fedb620c933f66.jpeg]
 
 Hey Darrel,…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 500d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 503d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-NZ0QPlj6b0pxvXo9tmtT">
@@ -1192,13 +1261,13 @@ Hey Darrel,…</div>
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">500d ago</span>
+            <span class="when">503d ago</span>
           </div>
           <div class="item-body">[https://storage.googleapis.com/msgsndr/rfUOqNNuHceIdzMwE08M/media/665721d214fedb620c933f66.jpeg]
 
 Hey Thato,
 …</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 500d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 503d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-lIC2B4BEh3eMzMPLxuvs">
@@ -1209,14 +1278,14 @@ Hey Thato,
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">500d ago</span>
+            <span class="when">503d ago</span>
           </div>
           <div class="item-body">[https://storage.googleapis.com/msgsndr/rfUOqNNuHceIdzMwE08M/media/665721d214fedb620c933f66.jpeg]
 
 Hey Dave,
 
 …</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 500d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 503d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-3GNiQ3t6JYMgLS15fBGn">
@@ -1227,12 +1296,12 @@ Hey Dave,
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">933d ago</span>
+            <span class="when">936d ago</span>
           </div>
           <div class="item-body">Hello there!
 
 I hope this message finds you well. We want to extend our sincerest apologies for the recent ema…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 933d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 936d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-YQwW2gzYhEdsBfnBZxLl">
@@ -1243,12 +1312,12 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">933d ago</span>
+            <span class="when">936d ago</span>
           </div>
           <div class="item-body">Hello there!
 
 I hope this message finds you well. We want to extend our sincerest apologies for the recent ema…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 933d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 936d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-bsS4cdfbbW1vKGOR6K0P">
@@ -1259,12 +1328,12 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">933d ago</span>
+            <span class="when">936d ago</span>
           </div>
           <div class="item-body">Hello there!
 
 I hope this message finds you well. We want to extend our sincerest apologies for the recent ema…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 933d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 936d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-cuzwVqZ7FHoNykd8IDVr">
@@ -1275,12 +1344,12 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">933d ago</span>
+            <span class="when">936d ago</span>
           </div>
           <div class="item-body">Hello there!
 
 I hope this message finds you well. We want to extend our sincerest apologies for the recent ema…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 933d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 936d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-zplzWZHYykt82MDQvhD1">
@@ -1291,12 +1360,12 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">933d ago</span>
+            <span class="when">936d ago</span>
           </div>
           <div class="item-body">Hello there!
 
 I hope this message finds you well. We want to extend our sincerest apologies for the recent ema…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 933d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 936d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-4fIQ779nKAcnM19UU5Mo">
@@ -1307,12 +1376,12 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">933d ago</span>
+            <span class="when">936d ago</span>
           </div>
           <div class="item-body">Hello there!
 
 I hope this message finds you well. We want to extend our sincerest apologies for the recent ema…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 933d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 936d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-E7EBaG8bUYhx04rxExge">
@@ -1323,12 +1392,12 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">933d ago</span>
+            <span class="when">936d ago</span>
           </div>
           <div class="item-body">Hello there!
 
 I hope this message finds you well. We want to extend our sincerest apologies for the recent ema…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 933d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 936d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-iYlighNsymQdNtKU1BVx">
@@ -1339,12 +1408,12 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">933d ago</span>
+            <span class="when">936d ago</span>
           </div>
           <div class="item-body">Hello there!
 
 I hope this message finds you well. We want to extend our sincerest apologies for the recent ema…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 933d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 936d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-GViUty9mP7RE9eQbMDge">
@@ -1355,12 +1424,12 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">933d ago</span>
+            <span class="when">936d ago</span>
           </div>
           <div class="item-body">Hello there!
 
 I hope this message finds you well. We want to extend our sincerest apologies for the recent ema…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 933d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 936d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-ADLIx4RKY3Ar37PCxskS">
@@ -1371,12 +1440,12 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">933d ago</span>
+            <span class="when">936d ago</span>
           </div>
           <div class="item-body">Hello there!
 
 I hope this message finds you well. We want to extend our sincerest apologies for the recent ema…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 933d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 936d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-atbMj6wFJ5DJoscTu8ct">
@@ -1387,12 +1456,12 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">933d ago</span>
+            <span class="when">936d ago</span>
           </div>
           <div class="item-body">Hello there!
 
 I hope this message finds you well. We want to extend our sincerest apologies for the recent ema…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 933d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 936d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-J1XIta3KCndrDA4qklk1">
@@ -1403,12 +1472,12 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">933d ago</span>
+            <span class="when">936d ago</span>
           </div>
           <div class="item-body">Hello there!
 
 I hope this message finds you well. We want to extend our sincerest apologies for the recent ema…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 933d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 936d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-87Iirj3hX7x1WrYYhfxh">
@@ -1419,12 +1488,12 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">933d ago</span>
+            <span class="when">936d ago</span>
           </div>
           <div class="item-body">Hello there!
 
 I hope this message finds you well. We want to extend our sincerest apologies for the recent ema…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 933d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 936d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-Gjh1ruMOtMVuC9TexxQa">
@@ -1435,12 +1504,12 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">933d ago</span>
+            <span class="when">936d ago</span>
           </div>
           <div class="item-body">Hello there!
 
 I hope this message finds you well. We want to extend our sincerest apologies for the recent ema…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 933d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 936d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-cKw5PfTLA3TW3KcVxt13">
@@ -1451,12 +1520,12 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">933d ago</span>
+            <span class="when">936d ago</span>
           </div>
           <div class="item-body">Hello there!
 
 I hope this message finds you well. We want to extend our sincerest apologies for the recent ema…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 933d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 936d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-YGEuw1qGsEbUxEOm58gh">
@@ -1467,12 +1536,12 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">933d ago</span>
+            <span class="when">936d ago</span>
           </div>
           <div class="item-body">Hello there!
 
 I hope this message finds you well. We want to extend our sincerest apologies for the recent ema…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 933d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 936d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-eTbv4YWdgqMY4ridLQxt">
@@ -1483,12 +1552,12 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">933d ago</span>
+            <span class="when">936d ago</span>
           </div>
           <div class="item-body">Hello there!
 
 I hope this message finds you well. We want to extend our sincerest apologies for the recent ema…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 933d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 936d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-C51t7PjE9vlxk9GTTQyJ">
@@ -1499,12 +1568,12 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">933d ago</span>
+            <span class="when">936d ago</span>
           </div>
           <div class="item-body">Hello there!
 
 I hope this message finds you well. We want to extend our sincerest apologies for the recent ema…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 933d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 936d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-ii9nhZW2ufVuDjwqNKzz">
@@ -1515,12 +1584,12 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">933d ago</span>
+            <span class="when">936d ago</span>
           </div>
           <div class="item-body">Hello there!
 
 I hope this message finds you well. We want to extend our sincerest apologies for the recent ema…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 933d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 936d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-8AL9Y5KepaoUcSuXqwL3">
@@ -1531,12 +1600,12 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">933d ago</span>
+            <span class="when">936d ago</span>
           </div>
           <div class="item-body">Hello there!
 
 I hope this message finds you well. We want to extend our sincerest apologies for the recent ema…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 933d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 936d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-agNkw6HYbgHJgVKI3z6j">
@@ -1547,12 +1616,12 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">933d ago</span>
+            <span class="when">936d ago</span>
           </div>
           <div class="item-body">Hello there!
 
 I hope this message finds you well. We want to extend our sincerest apologies for the recent ema…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 933d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 936d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li>
       <li class="item" data-key="convo-RDet9nA2RDmhMmmgPxLK">
@@ -1563,12 +1632,12 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <span class="badge chan">Email</span>
             <span class="badge brand">W.A.D.E. Coaching</span>
             <span class="badge unread">1 unread</span>
-            <span class="when">933d ago</span>
+            <span class="when">936d ago</span>
           </div>
           <div class="item-body">Hello there!
 
 I hope this message finds you well. We want to extend our sincerest apologies for the recent ema…</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 933d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Overdue 936d — open by owning the delay, then: coaching lead — ask what their biggest goal is right now, then offer a call. No phone/email on IG leads — this thread IS the pipeline.</div>
         </div>
       </li></ul>
       </section>
@@ -1581,6 +1650,136 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
         <p class="sub">WGAI &amp; Coaching contacts added in the last 7 days (ACS leads are on Rejean&#x27;s page).</p>
         <div class="coach"><span class="bulb">Agent read</span> 25 new this week. First-touch within 24h, and register each in BOTH the CRM and Notion.</div>
         <ul class="items">
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/2MD2Ks7IJQjCkw2tQUvh">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/2MD2Ks7IJQjCkw2tQUvh" target="_blank" rel="noopener">vxvuokfeyl</a>
+            <span class="badge brand">WadeGlobal AI</span>
+            <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span>
+            <span class="when">3h ago</span>
+          </div>
+          <div class="item-body">t•••@gmail.com · +•••••••••76</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Fresh today — call them for first touch, then register in BOTH the CRM and the Notion client database. Speed wins these.</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/OxrJYThtZnx2WlnyYzNz">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/OxrJYThtZnx2WlnyYzNz" target="_blank" rel="noopener">suzanne leonard</a>
+            <span class="badge brand">WadeGlobal AI</span>
+            <span class="badge tag">inbound-email</span> <span class="badge tag">inbox-relationship</span> <span class="badge tag">cat-client_update</span>
+            <span class="when">4h ago</span>
+          </div>
+          <div class="item-body">b•••@bniconnectglobal.com</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Fresh today — email them for first touch, then register in BOTH the CRM and the Notion client database. Speed wins these.</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/moKjNHMB4LfD6lF9Ug2J">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/moKjNHMB4LfD6lF9Ug2J" target="_blank" rel="noopener">dffeuyqulq</a>
+            <span class="badge brand">WadeGlobal AI</span>
+            <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span>
+            <span class="when">9h ago</span>
+          </div>
+          <div class="item-body">b•••@yahoo.com · +•••••••••12</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Fresh today — call them for first touch, then register in BOTH the CRM and the Notion client database. Speed wins these.</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/Bfy2lAnG2uhFwlTONIxG">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/Bfy2lAnG2uhFwlTONIxG" target="_blank" rel="noopener">hmeutoiftq</a>
+            <span class="badge brand">WadeGlobal AI</span>
+            <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span>
+            <span class="when">9h ago</span>
+          </div>
+          <div class="item-body">j•••@buckeyeinternational.com · +•••••••••50</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Fresh today — call them for first touch, then register in BOTH the CRM and the Notion client database. Speed wins these.</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/OGsLFg0krsLr6yOwk6zq">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/OGsLFg0krsLr6yOwk6zq" target="_blank" rel="noopener">inmyoungnq</a>
+            <span class="badge brand">WadeGlobal AI</span>
+            <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span>
+            <span class="when">16h ago</span>
+          </div>
+          <div class="item-body">s•••@yahoo.com · +•••••••••77</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Fresh today — call them for first touch, then register in BOTH the CRM and the Notion client database. Speed wins these.</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/yQmX9ln7G4xUPqU0bgBt">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/yQmX9ln7G4xUPqU0bgBt" target="_blank" rel="noopener">acs.wadeglobal@gmail.com</a>
+            <span class="badge brand">WadeGlobal AI</span>
+            
+            <span class="when">1d ago</span>
+          </div>
+          <div class="item-body">a•••@gmail.com</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Email them for first touch, then register in BOTH the CRM and the Notion client database.</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/03kjMHOxlSqhxoJbEaz3">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/03kjMHOxlSqhxoJbEaz3" target="_blank" rel="noopener">guest visitor 002</a>
+            <span class="badge brand">WadeGlobal AI</span>
+            
+            <span class="when">1d ago</span>
+          </div>
+          <div class="item-body">no contact info</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> No phone or email — find a contact route before this goes cold, or it can&#x27;t be worked.</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/QjW9f43N649QAHD58Q73">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/QjW9f43N649QAHD58Q73" target="_blank" rel="noopener">yitrokyxgd</a>
+            <span class="badge brand">WadeGlobal AI</span>
+            <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span>
+            <span class="when">1d ago</span>
+          </div>
+          <div class="item-body">a•••@losbergerdeboer.com · +•••••••••61</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/nLUyvOtEDM0z7GhloOre">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/nLUyvOtEDM0z7GhloOre" target="_blank" rel="noopener">mmrxziryur</a>
+            <span class="badge brand">WadeGlobal AI</span>
+            <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span>
+            <span class="when">2d ago</span>
+          </div>
+          <div class="item-body">a•••@icloud.com · +•••••••••57</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
+        </div>
+      </li>
+      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/8tX9XTTOu2b8pNZd0k30">
+        <label class="done-box"><input type="checkbox" class="done"></label>
+        <div class="item-main">
+          <div class="item-top">
+            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/8tX9XTTOu2b8pNZd0k30" target="_blank" rel="noopener">jptjulllpq</a>
+            <span class="badge brand">WadeGlobal AI</span>
+            <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span>
+            <span class="when">2d ago</span>
+          </div>
+          <div class="item-body">a•••@outlook.com · +•••••••••85</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> Call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
+        </div>
+      </li>
       <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/peBnVKz3VYqlGlccecQ0">
         <label class="done-box"><input type="checkbox" class="done"></label>
         <div class="item-main">
@@ -1588,10 +1787,10 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/peBnVKz3VYqlGlccecQ0" target="_blank" rel="noopener">eia developer</a>
             <span class="badge brand">WadeGlobal AI</span>
             <span class="badge tag">cat-support</span> <span class="badge tag">inbound-email</span> <span class="badge tag">inbox-support</span> <span class="badge tag">tier-1</span>
-            <span class="when">3h ago</span>
+            <span class="when">3d ago</span>
           </div>
           <div class="item-body">d•••@eia.gov</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Fresh today — email them for first touch, then register in BOTH the CRM and the Notion client database. Speed wins these.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> 3d old and cooling — email them for first touch, then register in BOTH the CRM and the Notion client database.</div>
         </div>
       </li>
       <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/IKpnsVhN47cplkwxiED3">
@@ -1601,10 +1800,10 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/IKpnsVhN47cplkwxiED3" target="_blank" rel="noopener">zooqjwizfe</a>
             <span class="badge brand">WadeGlobal AI</span>
             <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span>
-            <span class="when">1d ago</span>
+            <span class="when">4d ago</span>
           </div>
           <div class="item-body">b•••@amesco.com · +•••••••••90</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> 4d old and cooling — call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
         </div>
       </li>
       <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/KCGrEa1NBYEPaGYVQx2O">
@@ -1614,10 +1813,10 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/KCGrEa1NBYEPaGYVQx2O" target="_blank" rel="noopener">jeusuheyrg</a>
             <span class="badge brand">WadeGlobal AI</span>
             <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span>
-            <span class="when">1d ago</span>
+            <span class="when">4d ago</span>
           </div>
           <div class="item-body">s•••@brownintegratedlogistics.com · +•••••••••99</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> 4d old and cooling — call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
         </div>
       </li>
       <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/folWQPc1T9oOiyqQkAad">
@@ -1627,10 +1826,10 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/folWQPc1T9oOiyqQkAad" target="_blank" rel="noopener">pwpugudgtk</a>
             <span class="badge brand">WadeGlobal AI</span>
             <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span>
-            <span class="when">1d ago</span>
+            <span class="when">4d ago</span>
           </div>
           <div class="item-body">k•••@fassmer.de · +•••••••••14</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> 4d old and cooling — call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
         </div>
       </li>
       <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/4XyPw81jvZzYNHdi9G7U">
@@ -1640,10 +1839,10 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/4XyPw81jvZzYNHdi9G7U" target="_blank" rel="noopener">yjjdksrdrl</a>
             <span class="badge brand">WadeGlobal AI</span>
             <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span>
-            <span class="when">2d ago</span>
+            <span class="when">5d ago</span>
           </div>
           <div class="item-body">r•••@knology.net · +•••••••••57</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> 5d old and cooling — call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
         </div>
       </li>
       <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/PJQ900uzBgSoGgIgWGNN">
@@ -1653,10 +1852,10 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/PJQ900uzBgSoGgIgWGNN" target="_blank" rel="noopener">mtigrlrrhl</a>
             <span class="badge brand">WadeGlobal AI</span>
             <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span>
-            <span class="when">2d ago</span>
+            <span class="when">5d ago</span>
           </div>
           <div class="item-body">j•••@pvatepla.com · +•••••••••95</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> Call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> 5d old and cooling — call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
         </div>
       </li>
       <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/qkWvKu4Nmb95suaKVNga">
@@ -1666,10 +1865,10 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/qkWvKu4Nmb95suaKVNga" target="_blank" rel="noopener">hemmwmkljl</a>
             <span class="badge brand">WadeGlobal AI</span>
             <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span>
-            <span class="when">3d ago</span>
+            <span class="when">6d ago</span>
           </div>
           <div class="item-body">e•••@gmail.com · +•••••••••00</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> 3d old and cooling — call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> 6d old and cooling — call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
         </div>
       </li>
       <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/V8UbVKNlbLVbA6SaTPXd">
@@ -1679,10 +1878,10 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/V8UbVKNlbLVbA6SaTPXd" target="_blank" rel="noopener">fmxmhhnnuh</a>
             <span class="badge brand">WadeGlobal AI</span>
             <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span>
-            <span class="when">3d ago</span>
+            <span class="when">6d ago</span>
           </div>
           <div class="item-body">r•••@bmscat.com · +•••••••••43</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> 3d old and cooling — call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> 6d old and cooling — call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
         </div>
       </li>
       <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/8r4ROyVRRyopgstQfAcQ">
@@ -1692,7 +1891,7 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/8r4ROyVRRyopgstQfAcQ" target="_blank" rel="noopener">blacksuccessconnect</a>
             <span class="badge brand">WadeGlobal AI</span>
             
-            <span class="when">3d ago</span>
+            <span class="when">6d ago</span>
           </div>
           <div class="item-body">no contact info</div>
           <div class="suggest"><span class="bulb">Agent suggests</span> No phone or email — find a contact route before this goes cold, or it can&#x27;t be worked.</div>
@@ -1705,7 +1904,7 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/QGTCR5JAlJVJPeOoiVCb" target="_blank" rel="noopener">snypah ontherise bangino</a>
             <span class="badge brand">WadeGlobal AI</span>
             
-            <span class="when">3d ago</span>
+            <span class="when">6d ago</span>
           </div>
           <div class="item-body">no contact info</div>
           <div class="suggest"><span class="bulb">Agent suggests</span> No phone or email — find a contact route before this goes cold, or it can&#x27;t be worked.</div>
@@ -1718,10 +1917,10 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/Hd3zVPoFVxZNC5Ffgwib" target="_blank" rel="noopener">gnirsuikmw</a>
             <span class="badge brand">WadeGlobal AI</span>
             <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span>
-            <span class="when">3d ago</span>
+            <span class="when">6d ago</span>
           </div>
           <div class="item-body">t•••@clarkvintage.com · +•••••••••10</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> 3d old and cooling — call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> 6d old and cooling — call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
         </div>
       </li>
       <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/2hOZRw5ZfNMhxxtlUghy">
@@ -1731,10 +1930,10 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/2hOZRw5ZfNMhxxtlUghy" target="_blank" rel="noopener">lnmemsjkdk</a>
             <span class="badge brand">WadeGlobal AI</span>
             <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span>
-            <span class="when">3d ago</span>
+            <span class="when">6d ago</span>
           </div>
           <div class="item-body">n•••@bgeeng.com · +•••••••••57</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> 3d old and cooling — call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> 6d old and cooling — call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
         </div>
       </li>
       <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/YzEMPAFk2oNNyuOYs1JL">
@@ -1744,10 +1943,10 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/YzEMPAFk2oNNyuOYs1JL" target="_blank" rel="noopener">anthropic, pbc</a>
             <span class="badge brand">WadeGlobal AI</span>
             <span class="badge tag">cat-client_update</span> <span class="badge tag">inbound-email</span> <span class="badge tag">inbox-relationship</span> <span class="badge tag">tier-1</span>
-            <span class="when">3d ago</span>
+            <span class="when">6d ago</span>
           </div>
           <div class="item-body">i•••@mail.anthropic.com</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> 3d old and cooling — email them for first touch, then register in BOTH the CRM and the Notion client database.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> 6d old and cooling — email them for first touch, then register in BOTH the CRM and the Notion client database.</div>
         </div>
       </li>
       <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/EeELh65XYB4uVgoTOZnQ">
@@ -1757,10 +1956,10 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/EeELh65XYB4uVgoTOZnQ" target="_blank" rel="noopener">lpxmsorewu</a>
             <span class="badge brand">WadeGlobal AI</span>
             <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span>
-            <span class="when">3d ago</span>
+            <span class="when">6d ago</span>
           </div>
           <div class="item-body">s•••@optiforms.com · +•••••••••45</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> 3d old and cooling — call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> 6d old and cooling — call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
         </div>
       </li>
       <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/i4gWQS3cTcjdbzzHwO9V">
@@ -1770,140 +1969,10 @@ I hope this message finds you well. We want to extend our sincerest apologies fo
             <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/i4gWQS3cTcjdbzzHwO9V" target="_blank" rel="noopener">upjtvxhoor</a>
             <span class="badge brand">WadeGlobal AI</span>
             <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span>
-            <span class="when">3d ago</span>
+            <span class="when">6d ago</span>
           </div>
           <div class="item-body">n•••@dpr.com · +•••••••••08</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> 3d old and cooling — call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
-        </div>
-      </li>
-      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/mQjS1z5ckkuEpW77BQcQ">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/mQjS1z5ckkuEpW77BQcQ" target="_blank" rel="noopener">mftqyhprsr</a>
-            <span class="badge brand">WadeGlobal AI</span>
-            <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span>
-            <span class="when">3d ago</span>
-          </div>
-          <div class="item-body">r•••@verizon.net · +•••••••••21</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> 3d old and cooling — call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
-        </div>
-      </li>
-      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/m0sN1kj0mRWI94uib5d6">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/m0sN1kj0mRWI94uib5d6" target="_blank" rel="noopener">fiiymkpsyj</a>
-            <span class="badge brand">WadeGlobal AI</span>
-            <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span>
-            <span class="when">3d ago</span>
-          </div>
-          <div class="item-body">e•••@gmail.com · +•••••••••91</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> 3d old and cooling — call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
-        </div>
-      </li>
-      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/Yy0CPjQEzzYdoh2qwxfN">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/Yy0CPjQEzzYdoh2qwxfN" target="_blank" rel="noopener">gmmdowdzur</a>
-            <span class="badge brand">WadeGlobal AI</span>
-            <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span>
-            <span class="when">3d ago</span>
-          </div>
-          <div class="item-body">c•••@baslerweb.com · +•••••••••75</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> 3d old and cooling — call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
-        </div>
-      </li>
-      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/yaADTARwf6TTrkoRk78I">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/yaADTARwf6TTrkoRk78I" target="_blank" rel="noopener">osfmylufku</a>
-            <span class="badge brand">WadeGlobal AI</span>
-            <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span>
-            <span class="when">3d ago</span>
-          </div>
-          <div class="item-body">y•••@zwickroell.com · +•••••••••28</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> 3d old and cooling — call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
-        </div>
-      </li>
-      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/kgOwRC4G74XEGUsDYZ2p">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/kgOwRC4G74XEGUsDYZ2p" target="_blank" rel="noopener">xlyqfonfmm</a>
-            <span class="badge brand">WadeGlobal AI</span>
-            <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span>
-            <span class="when">3d ago</span>
-          </div>
-          <div class="item-body">j•••@derm90210.com · +•••••••••18</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> 3d old and cooling — call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
-        </div>
-      </li>
-      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/quY4VcohJqqY4wJC0BBF">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/quY4VcohJqqY4wJC0BBF" target="_blank" rel="noopener">megan@nashvillevoyager.com</a>
-            <span class="badge brand">WadeGlobal AI</span>
-            <span class="badge tag">cat-client_update</span> <span class="badge tag">inbound-email</span> <span class="badge tag">inbox-relationship</span> <span class="badge tag">tier-1</span>
-            <span class="when">3d ago</span>
-          </div>
-          <div class="item-body">m•••@nashvillevoyager.com</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> 3d old and cooling — email them for first touch, then register in BOTH the CRM and the Notion client database.</div>
-        </div>
-      </li>
-      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/dko3h0s33cUGhovd5i34">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/dko3h0s33cUGhovd5i34" target="_blank" rel="noopener">pdrdsjiqtz</a>
-            <span class="badge brand">WadeGlobal AI</span>
-            <span class="badge tag">ai audit lead</span> <span class="badge tag">lead magnet</span> <span class="badge tag">wgai-lead-magnet-audit</span>
-            <span class="when">3d ago</span>
-          </div>
-          <div class="item-body">s•••@yahoo.com · +•••••••••02</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> 3d old and cooling — call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
-        </div>
-      </li>
-      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/KiJWVUdR3lnx95npQ9lw">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/KiJWVUdR3lnx95npQ9lw" target="_blank" rel="noopener">billy wade</a>
-            <span class="badge brand">WadeGlobal AI</span>
-            
-            <span class="when">4d ago</span>
-          </div>
-          <div class="item-body">b•••@gmail.com</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> 4d old and cooling — email them for first touch, then register in BOTH the CRM and the Notion client database.</div>
-        </div>
-      </li>
-      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/a68P0wNpZ7DqCRBkzP3j">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/a68P0wNpZ7DqCRBkzP3j" target="_blank" rel="noopener">lee wade</a>
-            <span class="badge brand">WadeGlobal AI</span>
-            
-            <span class="when">4d ago</span>
-          </div>
-          <div class="item-body">a•••@ascentcleaningsolutions.com</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> 4d old and cooling — email them for first touch, then register in BOTH the CRM and the Notion client database.</div>
-        </div>
-      </li>
-      <li class="item" data-key="lead-https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/KyBKi9A5eXBfNlvlD35q">
-        <label class="done-box"><input type="checkbox" class="done"></label>
-        <div class="item-main">
-          <div class="item-top">
-            <a href="https://app.gohighlevel.com/v2/location/jQRnqyfcgM1FHgvFz842/contacts/detail/KyBKi9A5eXBfNlvlD35q" target="_blank" rel="noopener">resend</a>
-            <span class="badge brand">WadeGlobal AI</span>
-            <span class="badge tag">cat-client_update</span> <span class="badge tag">inbound-email</span> <span class="badge tag">inbox-relationship</span> <span class="badge tag">tier-1</span>
-            <span class="when">4d ago</span>
-          </div>
-          <div class="item-body">i•••@invoicing.resend.com</div>
-          <div class="suggest"><span class="bulb">Agent suggests</span> 4d old and cooling — email them for first touch, then register in BOTH the CRM and the Notion client database.</div>
+          <div class="suggest"><span class="bulb">Agent suggests</span> 6d old and cooling — call them for first touch, then register in BOTH the CRM and the Notion client database.</div>
         </div>
       </li></ul>
       </section>
@@ -2015,5 +2084,129 @@ document.querySelectorAll('.item[data-key]').forEach(function(li){
     }
   });
 });
-</script>
+
+(function(){
+  var PUNCH="https://n8n.wadeglobal.ai/webhook/wgai-timeclock", FEED="https://n8n.wadeglobal.ai/webhook/wgai-timeclock-feed";
+  var PERSON="jade";
+  var PINKEY='wgaiclock:pin:'+PERSON;
+  var card=document.getElementById('clockcard');
+  if(!card)return;
+  var statusEl=document.getElementById('clockStatus'), subEl=document.getElementById('clockSub'),
+      errEl=document.getElementById('clockErr'), btn=document.getElementById('clockBtn');
+  var state='out', mode='clock';
+
+  // note the explicit null check — a plain `s||''` would blank out a zero
+  function esc(s){var d=document.createElement('div');
+    d.textContent=(s===undefined||s===null)?'':s;return d.innerHTML;}
+
+  function pin(){return localStorage.getItem(PINKEY)||'';}
+
+  // The PIN lives only in this browser — it is never written into the page,
+  // which is what keeps the clock safe on public hosting.
+  function askPin(msg){
+    var v=prompt(msg||'Enter your 4-digit clock PIN (asked once per device)');
+    if(v===null)return '';
+    v=v.trim();
+    if(!v)return '';
+    localStorage.setItem(PINKEY,v);
+    return v;
+  }
+
+  function needPin(msg){
+    mode='pin';
+    card.classList.remove('on');
+    statusEl.textContent='Clock locked';
+    subEl.textContent=msg||'Enter your PIN once to switch on the clock on this device.';
+    errEl.textContent='';
+    btn.textContent='Enter PIN';btn.className='clock-btn';btn.disabled=false;
+  }
+
+  function paint(me){
+    errEl.textContent='';
+    mode='clock';
+    state=(me&&me.status==='in')?'in':'out';
+    if(state==='in'){
+      card.classList.add('on');
+      statusEl.textContent='On the clock';
+      var bits=[];
+      if(me.since_label)bits.push('Since <b>'+esc(me.since_label)+'</b>');
+      if(me.working_on)bits.push('Working on: <b>'+esc(me.working_on)+'</b>');
+      bits.push(esc(me.hours_today)+'h logged today');
+      subEl.innerHTML=bits.join(' · ');
+      btn.textContent='Clock out';
+      btn.className='clock-btn out';
+    } else {
+      card.classList.remove('on');
+      statusEl.textContent='Clocked out';
+      var t=[];
+      t.push('<b>'+esc(me?me.hours_today:0)+'h</b> today');
+      t.push('<b>'+esc(me?me.hours_week:0)+'h</b> this week');
+      subEl.innerHTML=t.join(' · ')+' — clock in and say what you\u2019re working on.';
+      btn.textContent='Clock in';
+      btn.className='clock-btn';
+    }
+    btn.disabled=false;
+  }
+
+  function load(){
+    var p=pin();
+    if(!p){needPin();return;}
+    fetch(FEED+'?person='+encodeURIComponent(PERSON)+'&pin='+encodeURIComponent(p)+'&t='+Date.now())
+      .then(function(r){return r.json()})
+      .then(function(d){
+        // the server answers 200 with ok:false on a bad PIN — a thrown fetch
+        // means the network is down, and that must not wipe a good PIN
+        if(!d||d.ok===false){var e=new Error('rejected');e.badPin=true;throw e;}
+        paint(d.people?d.people[PERSON]:null);
+      })
+      .catch(function(err){
+        if(err&&err.badPin){
+          localStorage.removeItem(PINKEY);
+          needPin('That PIN was not recognised. Try again.');
+          return;
+        }
+        statusEl.textContent='Clock unavailable';
+        subEl.textContent='Could not reach the time clock. Try again in a minute.';
+        btn.disabled=true;
+      });
+  }
+
+  btn.addEventListener('click',function(){
+    if(mode==='pin'){
+      if(!askPin())return;
+      btn.disabled=true;btn.textContent='Checking…';
+      load();
+      return;
+    }
+    var going=(state==='in')?'out':'in';
+    var q=(going==='in')
+      ? 'Clocking in — what are you working on today?'
+      : 'Clocking out — what did you get DONE? (one line of proof)';
+    var note=prompt(q);
+    if(note===null)return;
+    note=note.trim();
+    if(!note){errEl.textContent='Add one line so Wade can see it — nothing was recorded.';return;}
+    btn.disabled=true;btn.textContent='Saving…';
+    fetch(PUNCH,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({pin:pin(),person:PERSON,event:going,note:note,source:'dashboard'})})
+      .then(function(r){return r.json()})
+      .then(function(d){
+        if(!d||d.ok===false){var e=new Error('rejected');e.badPin=true;throw e;}
+        load();
+      })
+      .catch(function(err){
+        btn.disabled=false;
+        if(err&&err.badPin){
+          localStorage.removeItem(PINKEY);
+          needPin('That PIN was not recognised — nothing was recorded.');
+          return;
+        }
+        errEl.textContent='That did not save. Check your connection and try again.';
+        load();
+      });
+  });
+
+  load();
+  setInterval(load,120000);
+})();</script>
 </body></html>

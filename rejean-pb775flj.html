@@ -105,6 +105,46 @@ body{font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;backgroun
 .empty{font-size:13px;color:var(--ink-muted);background:var(--bg);border-radius:10px;padding:16px;line-height:1.6}
 .note{font-size:13px;color:var(--ink)}
 .foot{text-align:center;font-size:11.5px;color:var(--ink-muted);margin-top:30px;line-height:1.7}
+/* --- time clock --- */
+.clockcard{background:#fff;border:1px solid var(--line);border-top:3px solid var(--blue);border-radius:14px;
+padding:18px 22px;margin-bottom:20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.clockcard.on{border-top-color:#1f9d55}
+.clock-left{flex:1;min-width:200px}
+.clock-status{font-family:'Barlow Condensed','Inter',sans-serif;font-weight:600;font-size:21px;letter-spacing:.02em;
+text-transform:uppercase;display:flex;align-items:center;gap:9px}
+.clock-dot{width:10px;height:10px;border-radius:50%;background:var(--gray,#A0A0A0);flex:none}
+.clockcard.on .clock-dot{background:#1f9d55;box-shadow:0 0 0 4px rgba(31,157,85,.15)}
+.clock-sub{font-size:13px;color:var(--ink-muted);margin-top:5px;line-height:1.5}
+.clock-sub b{color:var(--navy);font-weight:600}
+.clock-btn{border:0;border-radius:10px;padding:13px 26px;font-family:inherit;font-size:14.5px;font-weight:600;
+color:#fff;background:var(--blue-deep);cursor:pointer;transition:background .15s}
+.clock-btn:hover:not(:disabled){background:var(--navy)}
+.clock-btn:disabled{opacity:.5;cursor:default}
+.clock-btn.out{background:#1f9d55}.clock-btn.out:hover:not(:disabled){background:#177a41}
+.clock-err{font-size:12px;color:#b4232a;margin-top:6px}
+/* --- manager roster --- */
+.roster{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-bottom:26px}
+.rcard{background:#fff;border:1px solid var(--line);border-top:3px solid var(--gray,#A0A0A0);border-radius:14px;padding:18px 20px}
+.rcard.on{border-top-color:#1f9d55}
+.rcard.missing{border-top-color:#d9534f}
+.rcard h3{font-family:'Barlow Condensed','Inter',sans-serif;font-weight:600;font-size:19px;letter-spacing:.02em;
+text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.rstate{font-size:12px;font-weight:600;margin-top:7px;color:var(--ink-muted)}
+.rcard.on .rstate{color:#177a41}
+.rcard.missing .rstate{color:#b4232a}
+.rtask{font-size:13.5px;margin-top:9px;line-height:1.5}
+.rhours{font-size:11.5px;color:var(--ink-muted);margin-top:11px;border-top:1px solid var(--line);padding-top:9px}
+.digest{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:22px}
+.digest h2{font-family:'Barlow Condensed','Inter',sans-serif;font-weight:600;font-size:20px;letter-spacing:.02em;
+text-transform:uppercase;margin-bottom:4px}
+.digest .sub{font-size:12.5px;color:var(--ink-muted);margin-bottom:14px}
+.dperson{border-top:1px solid var(--line);padding:13px 0}
+.dperson:first-of-type{border-top:0}
+.dname{font-weight:600;font-size:14.5px;display:flex;align-items:center;gap:7px}
+.dsess{font-size:13px;margin:7px 0 0 4px;padding-left:12px;border-left:2px solid var(--line);line-height:1.6}
+.dsess .when{color:var(--ink-muted);font-size:11.5px}
+.dsess .did{color:#177a41}
+.dnone{font-size:12.5px;color:var(--ink-muted);margin-top:5px}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 @media(max-width:600px){.wrap{padding:22px 14px}.tiles{grid-template-columns:1fr}.head h1{font-size:26px}}
 </style></head>
@@ -120,7 +160,16 @@ body{font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;backgroun
     <div id="overview">
       <div class="head">
         <h1>Good day, Rejean 👋</h1>
-        <div class="date">Sun Jul 26, 2026 · 01:52 AM CT · tap a section to see what's inside</div>
+        <div class="date">Wed Jul 29, 2026 · 01:58 AM CT · tap a section to see what's inside</div>
+      </div>
+      
+      <div class="clockcard" id="clockcard" data-person="rejean">
+        <div class="clock-left">
+          <div class="clock-status"><span class="clock-dot"></span><span id="clockStatus">Checking the clock…</span></div>
+          <div class="clock-sub" id="clockSub"></div>
+          <div class="clock-err" id="clockErr"></div>
+        </div>
+        <button class="clock-btn" id="clockBtn" disabled>…</button>
       </div>
       
       <section class="card" style="margin-top:22px">
@@ -219,7 +268,7 @@ body{font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;backgroun
         <div class="item-main">
           <div class="item-top"><a href="https://github.com/storage-dev/team-dashboard-feeds" target="_blank" rel="noopener">Agent feed channel is live</a>
             <span class="badge chan">agents</span>
-            <span class="when">9d ago</span></div>
+            <span class="when">12d ago</span></div>
           <div class="item-body">Agents: push your updates to this repo per the README and they appear on the team dashboards.</div>
           <div class="suggest"><span class="bulb">Agent suggests</span> Agent work landed — skim it; if it changes your plan today, act, otherwise just know it exists.</div>
         </div>
@@ -319,5 +368,129 @@ document.querySelectorAll('.item[data-key]').forEach(function(li){
     }
   });
 });
-</script>
+
+(function(){
+  var PUNCH="https://n8n.wadeglobal.ai/webhook/wgai-timeclock", FEED="https://n8n.wadeglobal.ai/webhook/wgai-timeclock-feed";
+  var PERSON="rejean";
+  var PINKEY='wgaiclock:pin:'+PERSON;
+  var card=document.getElementById('clockcard');
+  if(!card)return;
+  var statusEl=document.getElementById('clockStatus'), subEl=document.getElementById('clockSub'),
+      errEl=document.getElementById('clockErr'), btn=document.getElementById('clockBtn');
+  var state='out', mode='clock';
+
+  // note the explicit null check — a plain `s||''` would blank out a zero
+  function esc(s){var d=document.createElement('div');
+    d.textContent=(s===undefined||s===null)?'':s;return d.innerHTML;}
+
+  function pin(){return localStorage.getItem(PINKEY)||'';}
+
+  // The PIN lives only in this browser — it is never written into the page,
+  // which is what keeps the clock safe on public hosting.
+  function askPin(msg){
+    var v=prompt(msg||'Enter your 4-digit clock PIN (asked once per device)');
+    if(v===null)return '';
+    v=v.trim();
+    if(!v)return '';
+    localStorage.setItem(PINKEY,v);
+    return v;
+  }
+
+  function needPin(msg){
+    mode='pin';
+    card.classList.remove('on');
+    statusEl.textContent='Clock locked';
+    subEl.textContent=msg||'Enter your PIN once to switch on the clock on this device.';
+    errEl.textContent='';
+    btn.textContent='Enter PIN';btn.className='clock-btn';btn.disabled=false;
+  }
+
+  function paint(me){
+    errEl.textContent='';
+    mode='clock';
+    state=(me&&me.status==='in')?'in':'out';
+    if(state==='in'){
+      card.classList.add('on');
+      statusEl.textContent='On the clock';
+      var bits=[];
+      if(me.since_label)bits.push('Since <b>'+esc(me.since_label)+'</b>');
+      if(me.working_on)bits.push('Working on: <b>'+esc(me.working_on)+'</b>');
+      bits.push(esc(me.hours_today)+'h logged today');
+      subEl.innerHTML=bits.join(' · ');
+      btn.textContent='Clock out';
+      btn.className='clock-btn out';
+    } else {
+      card.classList.remove('on');
+      statusEl.textContent='Clocked out';
+      var t=[];
+      t.push('<b>'+esc(me?me.hours_today:0)+'h</b> today');
+      t.push('<b>'+esc(me?me.hours_week:0)+'h</b> this week');
+      subEl.innerHTML=t.join(' · ')+' — clock in and say what you\u2019re working on.';
+      btn.textContent='Clock in';
+      btn.className='clock-btn';
+    }
+    btn.disabled=false;
+  }
+
+  function load(){
+    var p=pin();
+    if(!p){needPin();return;}
+    fetch(FEED+'?person='+encodeURIComponent(PERSON)+'&pin='+encodeURIComponent(p)+'&t='+Date.now())
+      .then(function(r){return r.json()})
+      .then(function(d){
+        // the server answers 200 with ok:false on a bad PIN — a thrown fetch
+        // means the network is down, and that must not wipe a good PIN
+        if(!d||d.ok===false){var e=new Error('rejected');e.badPin=true;throw e;}
+        paint(d.people?d.people[PERSON]:null);
+      })
+      .catch(function(err){
+        if(err&&err.badPin){
+          localStorage.removeItem(PINKEY);
+          needPin('That PIN was not recognised. Try again.');
+          return;
+        }
+        statusEl.textContent='Clock unavailable';
+        subEl.textContent='Could not reach the time clock. Try again in a minute.';
+        btn.disabled=true;
+      });
+  }
+
+  btn.addEventListener('click',function(){
+    if(mode==='pin'){
+      if(!askPin())return;
+      btn.disabled=true;btn.textContent='Checking…';
+      load();
+      return;
+    }
+    var going=(state==='in')?'out':'in';
+    var q=(going==='in')
+      ? 'Clocking in — what are you working on today?'
+      : 'Clocking out — what did you get DONE? (one line of proof)';
+    var note=prompt(q);
+    if(note===null)return;
+    note=note.trim();
+    if(!note){errEl.textContent='Add one line so Wade can see it — nothing was recorded.';return;}
+    btn.disabled=true;btn.textContent='Saving…';
+    fetch(PUNCH,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({pin:pin(),person:PERSON,event:going,note:note,source:'dashboard'})})
+      .then(function(r){return r.json()})
+      .then(function(d){
+        if(!d||d.ok===false){var e=new Error('rejected');e.badPin=true;throw e;}
+        load();
+      })
+      .catch(function(err){
+        btn.disabled=false;
+        if(err&&err.badPin){
+          localStorage.removeItem(PINKEY);
+          needPin('That PIN was not recognised — nothing was recorded.');
+          return;
+        }
+        errEl.textContent='That did not save. Check your connection and try again.';
+        load();
+      });
+  });
+
+  load();
+  setInterval(load,120000);
+})();</script>
 </body></html>
