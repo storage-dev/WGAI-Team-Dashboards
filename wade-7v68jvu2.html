@@ -164,7 +164,7 @@ text-transform:uppercase;margin-bottom:4px}
     <div class="roster" id="roster"></div>
     <div class="digest">
       <h2>Today — what got done</h2>
-      <div class="sub" id="digestDate">Every clock-out records one line of proof.</div>
+      <div class="sub" id="digestDate">Loading…</div>
       <div id="digest"></div>
     </div>
     <div class="digest">
@@ -172,12 +172,13 @@ text-transform:uppercase;margin-bottom:4px}
       <div class="sub">Hours logged since Monday.</div>
       <div id="week"></div>
     </div>
-    <div class="foot">Live from the time clock · refreshes every minute.<br>
-    Rebuilt with the rest of the command centers each morning.</div>
+    <div class="foot">Live from Notion — <b>Team Availability &amp; Time Clock</b> and <b>Team Daily Log</b>.
+    Refreshes every minute. Nobody has to send you anything.<br>
+    The team clocks in from Slack #shift-status exactly as they already do.</div>
   </div>
 <script>
 (function(){
-  var FEED="https://n8n.wadeglobal.ai/webhook/wgai-timeclock-feed", VIEWER="wade";
+  var FEED="https://n8n.wadeglobal.ai/webhook/wgai-team-feed", VIEWER="wade";
   var PINKEY='wgaiclock:pin:'+VIEWER;
   var PEOPLE={"jade": {"name": "Jade", "emoji": "\ud83e\udded", "role": "Operations & Finance \u2014 all brands"}, "rejean": {"name": "Rejean", "emoji": "\ud83e\uddf9", "role": "ACS Operations"}, "chloe": {"name": "Chloe", "emoji": "\ud83d\udce3", "role": "Social Media \u2014 all brands"}};
   function esc(s){var d=document.createElement('div');d.textContent=(s===undefined||s===null)?'':s;return d.innerHTML;}
@@ -185,53 +186,66 @@ text-transform:uppercase;margin-bottom:4px}
   function render(d){
     var roster=document.getElementById('roster'), digest=document.getElementById('digest'),
         week=document.getElementById('week');
-    // stamp in the business timezone, so it lines up with the punch times
-    // even when Wade is looking at this from another time zone
+    // stamp in the business timezone so it lines up with the Notion clock times
+    // even when Wade is looking at this from somewhere else
     var now=new Date();
     var clock=new Intl.DateTimeFormat('en-US',
       {timeZone:d.timezone||'America/Chicago',hour:'numeric',minute:'2-digit'}).format(now);
     document.getElementById('asof').textContent='As of '+clock+' · '+d.today;
-    document.getElementById('digestDate').textContent='Clock-outs recorded on '+d.today+'.';
+    document.getElementById('digestDate').textContent=
+      'Straight from the Team Daily Log in Notion — '+d.today+'.';
 
     roster.innerHTML=''; digest.innerHTML=''; week.innerHTML='';
     Object.keys(PEOPLE).forEach(function(k){
       var p=PEOPLE[k], me=d.people[k]||{};
       var on=me.status==='in';
-      var missing=!on && !me.clocked_in_today;
+      var items=me.items_today||[];
+      // red only when they are neither on the clock nor have logged anything
+      var missing=!on && !me.clocked_in_today && !items.length;
       var card=document.createElement('div');
       card.className='rcard'+(on?' on':(missing?' missing':''));
       var state = on ? ('On the clock since '+esc(me.since_label))
-                     : (missing ? 'Has not clocked in today' : 'Clocked out');
+                     : (missing ? 'No clock-in, nothing logged today' : 'Not on the clock');
       var task = on
-        ? ('<div class="rtask">'+(me.working_on?esc(me.working_on):'<span class="dnone">No task noted</span>')+'</div>')
+        ? ('<div class="rtask">'+(me.working_on
+            ? ('Latest: '+esc(me.working_on))
+            : '<span class="dnone">Nothing logged yet today</span>')+'</div>')
+        : '';
+      // the agent flags auto-closed shifts as not real work; say so rather than
+      // quietly presenting a 20-hour day as if someone worked it
+      var warn = me.clock_unreliable
+        ? '<div class="rtask"><span class="dnone">⚠ last shift was auto-closed — clock time unconfirmed</span></div>'
         : '';
       card.innerHTML='<h3>'+p.emoji+' '+esc(p.name)+'</h3>'+
-        '<div class="rstate">'+state+'</div>'+task+
-        '<div class="rhours"><b>'+esc(me.hours_today||0)+'h</b> today · <b>'+esc(me.hours_week||0)+'h</b> this week</div>';
+        '<div class="rstate">'+state+'</div>'+task+warn+
+        '<div class="rhours"><b>'+esc(me.hours_today||0)+'h</b> logged today · <b>'+
+        esc(me.hours_week||0)+'h</b> this week</div>';
       roster.appendChild(card);
 
-      // today's digest
       var block=document.createElement('div');
       block.className='dperson';
       var rows='';
-      (me.sessions_today||[]).forEach(function(s){
-        rows+='<div class="dsess"><span class="when">'+esc(s.start)+'–'+esc(s.end)+' · '+esc(s.minutes)+' min</span><br>'+
-          (s.working_on?('Planned: '+esc(s.working_on)+'<br>'):'')+
-          '<span class="did">Done: '+esc(s.did||'(nothing recorded)')+'</span></div>';
+      items.forEach(function(it){
+        rows+='<div class="dsess"><span class="when">'+esc(it.hours||0)+' h'+
+          (it.department?(' · '+esc(it.department)):'')+
+          (it.status?(' · '+esc(it.status)):'')+'</span><br>'+
+          '<span class="did">'+esc(it.entry||'(untitled)')+'</span>'+
+          (it.summary&&it.summary!==it.entry?('<br>'+esc(it.summary)):'')+'</div>';
       });
-      if(on){
-        rows+='<div class="dsess"><span class="when">still on the clock</span><br>Working on: '+
-          esc(me.working_on||'(not noted)')+'</div>';
+      if(!rows){
+        rows=on
+          ? '<div class="dnone">On the clock, but nothing logged in Notion yet.</div>'
+          : '<div class="dnone">Nothing logged today.</div>';
       }
-      if(!rows)rows='<div class="dnone">Nothing logged today.</div>';
-      block.innerHTML='<div class="dname">'+p.emoji+' '+esc(p.name)+'</div>'+rows;
+      block.innerHTML='<div class="dname">'+p.emoji+' '+esc(p.name)+
+        ' <span style="font-weight:400;color:#5B7089">— '+items.length+' entries</span></div>'+rows;
       digest.appendChild(block);
 
-      // week line
       var w=document.createElement('div');
       w.className='dperson';
       w.innerHTML='<div class="dname">'+p.emoji+' '+esc(p.name)+
-        ' <span style="font-weight:400;color:#5B7089">— '+esc(me.hours_week||0)+' h since '+esc(d.week_start)+'</span></div>';
+        ' <span style="font-weight:400;color:#5B7089">— '+esc(me.hours_week||0)+' h across '+
+        esc(me.items_week||0)+' entries since '+esc(d.week_start)+'</span></div>';
       week.appendChild(w);
     });
   }
