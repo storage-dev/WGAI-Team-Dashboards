@@ -1,0 +1,890 @@
+<title>WadeGlobal Social Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --ground:#F5F8FB; --card:#FFFFFF; --card-2:#FAFCFE;
+  --ink:#0B1B2E; --ink-2:#33475C; --muted:#56697E;
+  --line:#DCE4ED; --line-soft:#EAF0F6; --accent:#2F7DD1;
+  --crit:#B3261E; --crit-bg:#FBEDEC; --high:#A15C00; --high-bg:#FCF3E5;
+  --med:#5B6470; --med-bg:#EEF1F5; --ok:#0F7A4A; --ok-bg:#EAF6F0;
+  --shadow:0 1px 2px rgba(11,27,46,.05), 0 4px 16px rgba(11,27,46,.05);
+    --s0:#2F7DD1;
+    --s1:#08886A;
+    --s2:#C0551F;
+    --s3:#8494A6;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0D151E; --card:#151F2A; --card-2:#1A2531;
+    --ink:#E9EFF6; --ink-2:#C2D0DE; --muted:#93A5B8;
+    --line:#22303F; --line-soft:#1C2937; --accent:#4B90DB;
+    --crit:#F1948A; --crit-bg:#2A1A19; --high:#E0A85C; --high-bg:#2A2116;
+    --med:#9AAABC; --med-bg:#1E2833; --ok:#5FC79A; --ok-bg:#14261E;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.25);
+    --s0:#4B90DB;
+    --s1:#12A17B;
+    --s2:#D9722F;
+    --s3:#7D8EA0;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0D151E; --card:#151F2A; --card-2:#1A2531;
+  --ink:#E9EFF6; --ink-2:#C2D0DE; --muted:#93A5B8;
+  --line:#22303F; --line-soft:#1C2937; --accent:#4B90DB;
+  --crit:#F1948A; --crit-bg:#2A1A19; --high:#E0A85C; --high-bg:#2A2116;
+  --med:#9AAABC; --med-bg:#1E2833; --ok:#5FC79A; --ok-bg:#14261E;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.25);
+    --s0:#4B90DB;
+    --s1:#12A17B;
+    --s2:#D9722F;
+    --s3:#7D8EA0;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:40px 28px 80px;display:flex;flex-direction:column;gap:44px}
+h1,h2,h3{font-family:"Barlow Condensed",Inter,sans-serif;text-wrap:balance;margin:0;letter-spacing:.01em}
+p{margin:0} .num{font-variant-numeric:tabular-nums}
+.mast{display:flex;flex-direction:column;gap:14px;padding-bottom:28px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+h1{font-size:clamp(38px,6vw,58px);font-weight:700;line-height:.98;text-transform:uppercase}
+.mast-meta{display:flex;flex-wrap:wrap;gap:8px 26px;font-size:13px;color:var(--muted);margin-top:4px}
+.mast-meta b{color:var(--ink-2);font-weight:600}
+.gradewrap{display:flex;gap:22px;align-items:stretch;flex-wrap:wrap}
+.gradebox{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--crit);
+  border-radius:4px;padding:22px 26px;box-shadow:var(--shadow);display:flex;align-items:center;gap:22px;flex:1;min-width:290px}
+.gletter{font-family:"Barlow Condensed",sans-serif;font-size:82px;font-weight:700;line-height:.8;
+  color:var(--crit)}
+.gtext .gk{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.gtext .gv{font-size:17px;font-weight:600;line-height:1.3;margin-top:3px}
+.gtext .gs{font-size:13px;color:var(--muted);margin-top:5px}
+.scores{display:grid;grid-template-columns:repeat(auto-fit,minmax(126px,1fr));gap:11px;flex:1.3;min-width:290px}
+.score{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:13px 14px 12px;box-shadow:var(--shadow)}
+.sk{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.sv{font-family:"Barlow Condensed",sans-serif;font-size:31px;font-weight:700;line-height:1.05;font-variant-numeric:tabular-nums}
+.sbar{height:3px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:5px}
+.sbar i{display:block;height:100%}
+.fresh{border-radius:4px;padding:12px 18px;font-size:13.5px;border:1px solid var(--line);
+  background:var(--card);box-shadow:var(--shadow)}
+.fresh.ok{border-left:4px solid var(--ok);color:var(--ink-2)}
+.fresh.warn{border-left:4px solid var(--crit);background:var(--crit-bg);color:var(--ink)}
+.fresh b{color:var(--ink)}
+.dlt{display:inline-block;font-size:11px;font-weight:600;margin-top:5px;letter-spacing:.02em;
+  font-variant-numeric:tabular-nums}
+.dlt.up{color:var(--ok)} .dlt.down{color:var(--crit)} .dlt.flat{color:var(--muted);font-weight:500}
+.gtext .gv .dlt{font-size:13px;margin-left:6px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:14px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:18px 20px 16px;
+  display:flex;flex-direction:column;gap:5px;box-shadow:var(--shadow)}
+.tile .k{font-size:11px;font-weight:600;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+.tile .v{font-family:"Barlow Condensed",sans-serif;font-size:44px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.tile .s{font-size:12.5px;color:var(--muted);line-height:1.45}
+.v-crit{color:var(--crit)} .v-ok{color:var(--ok)}
+section{display:flex;flex-direction:column;gap:18px}
+.sec-head{display:flex;flex-direction:column;gap:6px;border-bottom:1px solid var(--line);padding-bottom:12px}
+.sec-head h2{font-size:15px;font-weight:600;letter-spacing:.13em;text-transform:uppercase}
+.sec-head .lede{font-size:14.5px;color:var(--muted);max-width:74ch}
+.chart-card{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:24px 26px 18px;box-shadow:var(--shadow);overflow-x:auto}
+.legend{display:flex;flex-wrap:wrap;gap:6px 20px;margin-bottom:22px;font-size:12.5px;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:7px;font-weight:500}
+.legend em{font-style:normal;color:var(--muted);font-weight:400}
+.sw{width:11px;height:11px;border-radius:2px;flex:none}
+.plot{display:flex;align-items:flex-end;gap:clamp(10px,3.4vw,42px);height:292px;min-width:430px;padding-left:4px;border-bottom:1px solid var(--line)}
+.col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:8px;height:100%}
+.total{font-family:"Barlow Condensed",sans-serif;font-size:21px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+.stack{width:100%;max-width:78px;display:flex;flex-direction:column-reverse;gap:2px}
+.seg{position:relative;cursor:default}
+.stack .seg:last-child{border-radius:4px 4px 0 0}
+.seg:hover::after{content:attr(data-tip);position:absolute;left:50%;bottom:calc(100% + 7px);transform:translateX(-50%);
+  background:var(--ink);color:var(--ground);font-size:11.5px;font-weight:500;line-height:1.35;padding:6px 9px;
+  border-radius:3px;white-space:nowrap;z-index:9;pointer-events:none}
+.xaxis{display:flex;gap:clamp(10px,3.4vw,42px);padding:11px 0 0 4px;min-width:430px}
+.xaxis div{flex:1;text-align:center;font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
+.chart-note{font-size:12px;color:var(--muted);margin-top:14px;padding-top:12px;border-top:1px solid var(--line-soft)}
+.tbl-wrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:4px;box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;min-width:540px;font-size:13.5px}
+th,td{text-align:left;padding:11px 16px;border-bottom:1px solid var(--line-soft)}
+thead th{font-size:10.5px;font-weight:600;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);
+  background:var(--card-2);border-bottom:1px solid var(--line);white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+tfoot td{background:var(--card-2);font-weight:600;font-size:12.5px;border-top:1px solid var(--line)}
+.brandcell{display:inline-flex;align-items:center;gap:8px;font-weight:600}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:2.5px 8px;border-radius:3px;white-space:nowrap}
+.chip-ok{background:var(--ok-bg);color:var(--ok)} .chip-warn{background:var(--high-bg);color:var(--high)}
+.chip-dead{background:var(--crit-bg);color:var(--crit)} .chip-none{background:var(--med-bg);color:var(--med)}
+.dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
+.cellnum{font-variant-numeric:tabular-nums;font-weight:600;margin-right:9px}
+.zero{color:var(--muted);font-weight:400}
+td.acct{font-size:12.5px;color:var(--ink-2)}
+.brandsec{background:var(--card);border:1px solid var(--line);border-radius:5px;
+  box-shadow:var(--shadow);padding:24px 26px 26px;gap:20px}
+.bhead{display:flex;align-items:center;gap:14px;padding-bottom:16px;border-bottom:2px solid var(--line)}
+.bsw{width:8px;height:40px;border-radius:2px;flex:none}
+.bname h2{font-size:27px;font-weight:700;letter-spacing:.01em;text-transform:none;line-height:1}
+.bname span{font-size:12.5px;color:var(--muted)}
+.bgrade{margin-left:auto;display:flex;align-items:baseline;gap:10px}
+.bgl{font-family:"Barlow Condensed",sans-serif;font-size:44px;font-weight:700;line-height:.85}
+.bgn{font-family:"Barlow Condensed",sans-serif;font-size:22px;font-weight:600;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.bgn em{font-style:normal;font-size:13px;color:var(--muted)}
+.btiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(126px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.btile{background:var(--card-2);padding:13px 15px;display:flex;flex-direction:column;gap:3px}
+.bk{font-size:10px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.bv{font-family:"Barlow Condensed",sans-serif;font-size:26px;font-weight:700;line-height:1.05}
+.bsplit{display:grid;grid-template-columns:minmax(230px,1fr) minmax(300px,1.4fr);gap:20px;align-items:start}
+.bpanel{display:flex;flex-direction:column;gap:11px;min-width:0}
+.bpanel h3{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.bbars{display:flex;flex-direction:column;gap:8px}
+.bbar{display:grid;grid-template-columns:88px 1fr 30px;align-items:center;gap:10px;font-size:12px}
+.bl{color:var(--ink-2)}
+.bt{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bt i{display:block;height:100%}
+.bn{text-align:right;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink-2)}
+.bnote{font-size:11.5px;color:var(--muted);line-height:1.45}
+.bfind h3{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:11px}
+.brandsec .find{border-radius:4px}
+@media (max-width:760px){.bsplit{grid-template-columns:1fr}}
+.findings{display:flex;flex-direction:column;gap:12px}
+.find{background:var(--card);border:1px solid var(--line);border-radius:4px;box-shadow:var(--shadow);overflow:hidden}
+.find > summary{list-style:none;cursor:pointer;padding:16px 20px 16px 0;display:grid;
+  grid-template-columns:5px 40px 1fr auto;align-items:center;gap:16px}
+.find > summary::-webkit-details-marker{display:none}
+.find > summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.stripe{align-self:stretch;min-height:46px}
+.st-crit{background:var(--crit)} .st-high{background:var(--high)}
+.st-med{background:var(--med)} .st-ok{background:var(--ok)}
+.fid{font-family:"Barlow Condensed",sans-serif;font-size:19px;font-weight:700;color:var(--muted);text-align:center;font-variant-numeric:tabular-nums}
+.ftitle{font-weight:600;font-size:15px;line-height:1.4;color:var(--ink)}
+.ftitle .metric{color:var(--muted);font-weight:400;display:block;font-size:13px;margin-top:2px}
+.sev{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:3px 9px;border-radius:3px;white-space:nowrap}
+.sev-crit{background:var(--crit-bg);color:var(--crit)} .sev-high{background:var(--high-bg);color:var(--high)}
+.sev-med{background:var(--med-bg);color:var(--med)} .sev-ok{background:var(--ok-bg);color:var(--ok)}
+.fbody{padding:16px 24px 22px 61px;display:flex;flex-direction:column;gap:14px;border-top:1px solid var(--line-soft)}
+.fbody p{font-size:14px;color:var(--ink-2);max-width:72ch}
+.ev{background:var(--card-2);border:1px solid var(--line-soft);border-radius:3px;padding:12px 15px;font-size:13px;color:var(--ink-2)}
+.ev b{font-variant-numeric:tabular-nums;color:var(--ink)}
+.fix{display:flex;gap:10px;align-items:flex-start;font-size:14px}
+.fix .lbl{font-size:10px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--accent);padding-top:4px;flex:none;width:34px}
+.fix p{color:var(--ink);font-weight:500}
+.plan{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:4px;box-shadow:var(--shadow);overflow:hidden}
+.step{display:grid;grid-template-columns:78px 1fr 118px;gap:16px;padding:17px 20px;border-bottom:1px solid var(--line-soft);align-items:baseline}
+.step:last-child{border-bottom:none}
+.step .wk{font-family:"Barlow Condensed",sans-serif;font-size:13px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--accent)}
+.step .what{font-size:14.5px;color:var(--ink)}
+.step .what em{display:block;font-style:normal;font-size:13px;color:var(--muted);margin-top:3px}
+.step .who{font-size:12px;color:var(--muted);text-align:right;font-weight:500}
+.method{font-size:12.5px;color:var(--muted);background:var(--card);border:1px solid var(--line);border-radius:4px;padding:20px 24px;display:flex;flex-direction:column;gap:9px}
+.method h3{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.method p{max-width:82ch} .method b{color:var(--ink-2);font-weight:600}
+@media (max-width:640px){
+  .wrap{padding:28px 18px 60px;gap:36px}
+  .find > summary{grid-template-columns:5px 30px 1fr;gap:11px;padding-right:16px}
+  .find > summary .sev{grid-column:3;justify-self:start;margin-top:6px}
+  .fbody{padding-left:22px;padding-right:18px}
+  .step{grid-template-columns:64px 1fr} .step .who{grid-column:2;text-align:left}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <div class="eyebrow">Social Media Audit &middot; Internal</div>
+    <h1>WadeGlobal Social Audit</h1>
+    <div class="mast-meta">
+      <span><b>Window</b> 02 Jun – 31 Aug 2026</span>
+      <span><b>Scope</b> 4 brands &middot; 6 platforms</span>
+      <span><b>Posts</b> 894 published, 25 failed</span>
+      <span><b>Run</b> 31 Aug 2026</span>
+    </div>
+  </header>
+
+  <div class="fresh ok"><b>Live.</b> Data pulled 2026-08-31 00:33 UTC (0h ago) via MCP across 20 connected accounts.</div>
+
+  <div class="gradewrap">
+    <div class="gradebox">
+      <div class="gletter">E</div>
+      <div class="gtext">
+        <div class="k gk">Programme score</div>
+        <div class="gv">46 / 100 <span class="dlt up">+3.1</span></div>
+        <div class="gs">5 critical &middot; 4 high-severity findings &middot; was F on 2026-08-28</div>
+      </div>
+    </div>
+    <div class="scores"><div class="score"><div class="sk">Consistency</div><div class="sv num" style="color:var(--crit)">17</div><div class="sbar"><i style="width:17%;background:var(--crit)"></i></div><span class="dlt up">+17</span></div><div class="score"><div class="sk">Measurement</div><div class="sv num" style="color:var(--crit)">41</div><div class="sbar"><i style="width:41%;background:var(--crit)"></i></div><span class="dlt flat">no change</span></div><div class="score"><div class="sk">Performance</div><div class="sv num" style="color:var(--crit)">45</div><div class="sbar"><i style="width:45%;background:var(--crit)"></i></div><span class="dlt flat">no change</span></div><div class="score"><div class="sk">Conversion</div><div class="sv num" style="color:var(--high)">63</div><div class="sbar"><i style="width:63%;background:var(--high)"></i></div><span class="dlt flat">no change</span></div><div class="score"><div class="sk">Craft</div><div class="sv num" style="color:var(--high)">59</div><div class="sbar"><i style="width:59%;background:var(--high)"></i></div><span class="dlt down">−2</span></div><div class="score"><div class="sk">Reliability</div><div class="sv num" style="color:var(--ok)">79</div><div class="sbar"><i style="width:79%;background:var(--ok)"></i></div><span class="dlt flat">no change</span></div><div class="score"><div class="sk">Focus</div><div class="sv num" style="color:var(--crit)">48</div><div class="sbar"><i style="width:48%;background:var(--crit)"></i></div><span class="dlt down">−1</span></div></div>
+  </div>
+
+  <div class="tiles">
+    <div class="tile"><div class="k">Published</div><div class="v num">894</div>
+      <div class="s">02 Jun – 31 Aug. Plus 25 that failed to post.</div></div>
+    <div class="tile"><div class="k">Measured reach</div>
+      <div class="v v-crit num">18</div>
+      <div class="s">Impressions across 7 measured posts &middot; 0 engagements.</div></div>
+    <div class="tile"><div class="k">Last 30 days</div>
+      <div class="v v-crit num">−88%</div>
+      <div class="s">41 posts, against 358 in the 30 days before.</div></div>
+    <div class="tile"><div class="k">Queued ahead</div>
+      <div class="v v-ok num">23</div>
+      <div class="s">Posts scheduled after today.</div></div>
+  </div>
+
+  <section>
+    <div class="sec-head"><h2>Cadence</h2>
+      <p class="lede">Published posts per month, stacked by brand. 7 of 894 posts (1%) returned reach data.</p></div>
+    <div class="chart-card">
+      <div class="legend"><span><i class="sw" style="background:var(--s0)"></i>ACS <em>commercial cleaning</em></span><span><i class="sw" style="background:var(--s1)"></i>WGAI <em>revenue infrastructure</em></span><span><i class="sw" style="background:var(--s2)"></i>W.A.D.E. <em>leadership coaching</em></span><span><i class="sw" style="background:var(--s3)"></i>Unattributed</span></div>
+      <div class="plot"><div class="col"><div class="total num">450</div><div class="stack"><div class="seg" style="height:142px;background:var(--s0)" data-tip="ACS · Jun 2026 · 256 posts"></div><div class="seg" style="height:39px;background:var(--s1)" data-tip="WGAI · Jun 2026 · 71 posts"></div><div class="seg" style="height:60px;background:var(--s2)" data-tip="W.A.D.E. · Jun 2026 · 108 posts"></div><div class="seg" style="height:8px;background:var(--s3)" data-tip="Unattributed · Jun 2026 · 15 posts"></div></div></div><div class="col"><div class="total num">403</div><div class="stack"><div class="seg" style="height:116px;background:var(--s0)" data-tip="ACS · Jul 2026 · 209 posts"></div><div class="seg" style="height:40px;background:var(--s1)" data-tip="WGAI · Jul 2026 · 72 posts"></div><div class="seg" style="height:57px;background:var(--s2)" data-tip="W.A.D.E. · Jul 2026 · 103 posts"></div><div class="seg" style="height:11px;background:var(--s3)" data-tip="Unattributed · Jul 2026 · 19 posts"></div></div></div><div class="col"><div class="total num" style="color:var(--crit)">41</div><div class="stack"><div class="seg" style="height:11px;background:var(--s0)" data-tip="ACS · Aug 2026 · 20 posts"></div><div class="seg" style="height:3px;background:var(--s1)" data-tip="WGAI · Aug 2026 · 3 posts"></div><div class="seg" style="height:10px;background:var(--s2)" data-tip="W.A.D.E. · Aug 2026 · 18 posts"></div></div></div></div>
+      <div class="xaxis"><div>Jun</div><div>Jul</div><div>Aug*</div></div>
+      <p class="chart-note">*The final month is partial — it covers up to 31 Aug only. Hover any segment for the exact count.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Channel map</h2>
+      <p class="lede">Where the volume went, and how long each channel has been quiet. Past
+      31 days a profile reads as abandoned to both the ranking
+      model and to a prospect checking whether the business is still trading.</p></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Brand</th><th>Twitter</th><th>Threads</th><th>Facebook</th><th>Instagram</th><th>Linkedin</th><th>Tiktok</th><th class="n">Total</th></tr></thead>
+      <tbody><tr><td><span class="brandcell"><i class="sw" style="background:var(--s0)"></i>ACS</span></td><td><span class="cellnum">187</span><span class="chip chip-warn"><i class="dot"></i>8d</span></td><td><span class="cellnum">132</span><span class="chip chip-dead"><i class="dot"></i>50d</span></td><td><span class="cellnum">66</span><span class="chip chip-dead"><i class="dot"></i>52d</span></td><td><span class="cellnum">36</span><span class="chip chip-dead"><i class="dot"></i>40d</span></td><td><span class="cellnum">57</span><span class="chip chip-dead"><i class="dot"></i>51d</span></td><td><span class="cellnum">7</span><span class="chip chip-ok"><i class="dot"></i>4d</span></td><td class="n">485</td></tr><tr><td><span class="brandcell"><i class="sw" style="background:var(--s1)"></i>WGAI</span></td><td><span class="cellnum">16</span><span class="chip chip-warn"><i class="dot"></i>30d</span></td><td><span class="cellnum">12</span><span class="chip chip-dead"><i class="dot"></i>57d</span></td><td><span class="cellnum">38</span><span class="chip chip-warn"><i class="dot"></i>30d</span></td><td><span class="cellnum">51</span><span class="chip chip-warn"><i class="dot"></i>26d</span></td><td><span class="cellnum">28</span><span class="chip chip-dead"><i class="dot"></i>33d</span></td><td><span class="cellnum">1</span><span class="chip chip-dead"><i class="dot"></i>72d</span></td><td class="n">146</td></tr><tr><td><span class="brandcell"><i class="sw" style="background:var(--s2)"></i>W.A.D.E.</span></td><td><span class="cellnum">59</span><span class="chip chip-warn"><i class="dot"></i>26d</span></td><td><span class="cellnum">49</span><span class="chip chip-warn"><i class="dot"></i>26d</span></td><td><span class="cellnum">54</span><span class="chip chip-warn"><i class="dot"></i>26d</span></td><td><span class="cellnum">37</span><span class="chip chip-dead"><i class="dot"></i>36d</span></td><td><span class="cellnum">13</span><span class="chip chip-dead"><i class="dot"></i>54d</span></td><td><span class="cellnum">17</span><span class="chip chip-dead"><i class="dot"></i>41d</span></td><td class="n">229</td></tr><tr><td><span class="brandcell"><i class="sw" style="background:var(--s3)"></i>Unattributed</span></td><td><span class="zero">—</span></td><td><span class="zero">—</span></td><td><span class="cellnum">9</span><span class="chip chip-dead"><i class="dot"></i>41d</span></td><td><span class="cellnum">17</span><span class="chip chip-dead"><i class="dot"></i>40d</span></td><td><span class="cellnum">8</span><span class="chip chip-dead"><i class="dot"></i>41d</span></td><td><span class="zero">—</span></td><td class="n">34</td></tr></tbody>
+      <tfoot><tr><td>All brands</td><td>262</td><td>193</td><td>167</td><td>141</td><td>106</td><td>25</td><td class="n">894</td></tr></tfoot>
+    </table></div>
+  </section>
+
+  <div class="sec-head" style="margin-bottom:-16px"><h2>By brand</h2>
+    <p class="lede">Each brand graded on its own posts and its own accounts, because the
+    programme average hides both the best and the worst of them.</p>
+    <p class="chart-note" style="border:none;padding:0;margin:0">Not mapped to any brand: <b>&lt;Requires admin access&gt;</b> (linkedin).</p></div>
+
+  <section class="brandsec" id="brand-acs">
+    <div class="bhead">
+      <i class="bsw" style="background:var(--s0)"></i>
+      <div class="bname"><h2>ACS</h2><span>commercial cleaning</span></div>
+      <div class="bgrade"><span class="bgl" style="color:var(--crit)">E</span>
+        <span class="bgn">56<em>/100</em></span></div>
+    </div>
+    <div class="btiles"><div class="btile"><span class="bk">Posts</span><span class="bv num">489</span></div><div class="btile"><span class="bk">Share of output</span><span class="bv num">55%</span></div><div class="btile"><span class="bk">Last post</span><span class="bv num">4d ago</span></div><div class="btile"><span class="bk">Measured reach</span><span class="bv num">4</span></div><div class="btile"><span class="bk">Accounts live</span><span class="bv num">5/6</span></div><div class="btile"><span class="bk">Busiest channel</span><span class="bv num">Twitter</span></div></div>
+    <div class="bsplit">
+      <div class="bpanel"><h3>Scores</h3><div class="bbars"><div class="bbar"><span class="bl">Consistency</span><span class="bt"><i style="width:34%;background:var(--crit)"></i></span><span class="bn num">34</span></div><div class="bbar"><span class="bl">Measurement</span><span class="bt"><i style="width:41%;background:var(--crit)"></i></span><span class="bn num">41</span></div><div class="bbar"><span class="bl">Performance</span><span class="bt"><i style="width:45%;background:var(--crit)"></i></span><span class="bn num">45</span></div><div class="bbar"><span class="bl">Conversion</span><span class="bt"><i style="width:79%;background:var(--ok)"></i></span><span class="bn num">79</span></div><div class="bbar"><span class="bl">Craft</span><span class="bt"><i style="width:75%;background:var(--ok)"></i></span><span class="bn num">75</span></div><div class="bbar"><span class="bl">Reliability</span><span class="bt"><i style="width:100%;background:var(--ok)"></i></span><span class="bn num">100</span></div></div>
+        <p class="bnote">Graded on this brand's posts alone. Focus is a cross-brand
+        measure and is excluded here.</p></div>
+      <div class="bpanel"><h3>Accounts</h3><div class="tbl-wrap"><table><thead><tr><th>Platform</th><th>Account</th><th class="n">Posts</th><th>Last post</th></tr></thead><tbody><tr><td>Twitter</td><td class="acct">AscentCleaning</td><td class="n">187</td><td><span class="chip chip-warn"><i class="dot"></i>8d</span></td></tr><tr><td>Threads</td><td class="acct">ascentcleaningsolutions</td><td class="n">132</td><td><span class="chip chip-dead"><i class="dot"></i>50d</span></td></tr><tr><td>Facebook</td><td class="acct">Ascent Cleaning Solutions, LLC</td><td class="n">61</td><td><span class="chip chip-dead"><i class="dot"></i>52d</span></td></tr><tr><td>Instagram</td><td class="acct">ascentcleaningsolutions</td><td class="n">29</td><td><span class="chip chip-dead"><i class="dot"></i>52d</span></td></tr><tr><td>Tiktok</td><td class="acct">ascentcleaningsolutions</td><td class="n">7</td><td><span class="chip chip-ok"><i class="dot"></i>4d</span></td></tr><tr><td>Linkedin</td><td class="acct">Ascent Cleaning Solutions</td><td class="n" colspan="2"><span class="chip chip-none">not reported per account</span></td></tr></tbody></table></div></div>
+    </div>
+    <div class="bfind"><h3>10 findings for ACS</h3>
+      <div class="findings">
+      <details class="find" open>
+        <summary>
+          <i class="stripe st-crit"></i>
+          <span class="fid">01</span>
+          <span class="ftitle">Most of the output has never been measured<span class="metric">4 of 485 posts (1%) return any reach data</span></span>
+          <span class="sev sev-crit">Critical</span>
+        </summary>
+        <div class="fbody">
+          <p>Work that cannot be measured cannot be judged, improved or defended. Every post without a number attached is a guess about whether it was worth making.</p>
+          <div class="ev">Platforms returning no metrics at all: <b>facebook</b>, <b>instagram</b>, <b>linkedin</b>, <b>threads</b>, <b>tiktok</b>. 481 posts have no reach data.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Connect native insights for the platforms that support them, and pull reach weekly. Until a channel reports a number, treat posting to it as unpaid work.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-crit"></i>
+          <span class="fid">02</span>
+          <span class="ftitle">The posts that can be measured are not reaching anyone<span class="metric">4 impressions across 4 measured posts · 0 engagements</span></span>
+          <span class="sev sev-crit">Critical</span>
+        </summary>
+        <div class="fbody">
+          <p>This is the finding that decides whether the programme is worth continuing in its current form. Volume is not the constraint — distribution is.</p>
+          <div class="ev">Average <b>1.0</b> impressions per measured post. Engagement rate <b>0.00%</b>. Total engagements recorded: <b>0</b>.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Stop scaling output. Fix distribution first: post where the audience already is, engage from the account daily, and let reach prove itself before volume returns.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-crit"></i>
+          <span class="fid">03</span>
+          <span class="ftitle">Publishing volume has collapsed<span class="metric">20 posts in 30 days, down from 171</span></span>
+          <span class="sev sev-crit">Critical</span>
+        </summary>
+        <div class="fbody">
+          <p>Output fell 88% between the last 30 days and the 30 days before them. A cadence that stops is worse than a smaller one that holds, because every platform reads the gap as abandonment.</p>
+          <div class="ev">Last 30 days: 20 posts. Previous 30 days: 171.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Restore a floor cadence you can actually sustain and schedule it a fortnight out.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-crit"></i>
+          <span class="fid">04</span>
+          <span class="ftitle">Channels have gone dormant<span class="metric">4 of 6 brand-channels silent 31+ days</span></span>
+          <span class="sev sev-crit">Critical</span>
+        </summary>
+        <div class="fbody">
+          <p>A prospect who checks one of these profiles sees a business that appears to have stopped trading. Dormant accounts also lose the distribution they had built.</p>
+          <div class="ev">Longest silent: ACS facebook <b>52d</b> · ACS linkedin <b>51d</b> · ACS threads <b>50d</b> · ACS instagram <b>40d</b>.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Either post to it or take the link down. A dead profile costs more than no profile.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-high"></i>
+          <span class="fid">05</span>
+          <span class="ftitle">ACS asks for the business without saying how to get it<span class="metric">81% carry a call to action · 7% carry a way to respond</span></span>
+          <span class="sev sev-high">High</span>
+        </summary>
+        <div class="fbody">
+          <p>Of 398 captions, 321 tell the reader to take an action but only 28 give them a route to do it. This is the cheapest fix available — a template change, not a strategy change.</p>
+          <div class="ev">Across 398 ACS captions: phone in <b>1</b> · website in <b>1</b> · email in <b>27</b>.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Append the phone, site or booking link to the caption template and enforce it in the generator so a post cannot ship without one.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-high"></i>
+          <span class="fid">06</span>
+          <span class="ftitle">The heaviest channel is the weakest one<span class="metric">187 posts (39%) to twitter, averaging 1.0 impressions</span></span>
+          <span class="sev sev-high">High</span>
+        </summary>
+        <div class="fbody">
+          <p>More than a fifth of all output goes to the one channel proven in this data to reach almost nobody, while channels with real upside are under-fed.</p>
+          <div class="ev">Volume by platform: twitter <b>187</b> · threads <b>132</b> · facebook <b>66</b> · linkedin <b>57</b> · instagram <b>36</b> · tiktok <b>7</b>.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Demote twitter to a mirror of what already exists elsewhere and move that effort to the channels with the most headroom.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-high"></i>
+          <span class="fid">07</span>
+          <span class="ftitle">Posts are publishing with no caption at all<span class="metric">18 of 485 posts (4%) have an empty caption</span></span>
+          <span class="sev sev-high">High</span>
+        </summary>
+        <div class="fbody">
+          <p>A bare image carries no message, no keywords, no call to action and nothing for search or the ranking model to read. These posts are pure cost.</p>
+          <div class="ev">By platform: instagram <b>9</b> · facebook <b>9</b>. By brand: ACS <b>18</b>.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Add a validation rule that refuses to schedule a post with an empty caption.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-med"></i>
+          <span class="fid">08</span>
+          <span class="ftitle">Captions are being reused verbatim<span class="metric">73 posts (15%) repeat text published elsewhere</span></span>
+          <span class="sev sev-med">Medium</span>
+        </summary>
+        <div class="fbody">
+          <p>Duplicate text across accounts is suppressed by most platforms and reads as automated to anyone who follows more than one of them.</p>
+          <div class="ev">416 distinct captions across 485 posts. Most repeated ran <b>27</b> times: &ldquo;commercial cleaning built on nashville trust. book an acs walkthrough: info@ascentcleaning&hellip;&rdquo;</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Generate per-platform captions rather than joining one caption across accounts, and add a 90-day duplicate check before scheduling.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-med"></i>
+          <span class="fid">09</span>
+          <span class="ftitle">Output arrives in bursts, not a cadence<span class="metric">52 posts in one day · silent on 51 of 90 days</span></span>
+          <span class="sev sev-med">Medium</span>
+        </summary>
+        <div class="fbody">
+          <p>Batch-dumping a week of content in an afternoon suppresses reach on every platform and trains no audience habit. The same volume spread evenly performs better.</p>
+          <div class="ev">Peak day 2026-07-07: <b>52</b> posts. Median active day: <b>3</b>. Active on <b>39</b> of <b>90</b> days.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Schedule from a queue with a daily cap rather than publishing on generation day.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-med"></i>
+          <span class="fid">10</span>
+          <span class="ftitle">Captions do not fit the platform they are posted to<span class="metric">1 platform rules missed</span></span>
+          <span class="sev sev-med">Medium</span>
+        </summary>
+        <div class="fbody">
+          <p>Each platform rewards a different shape. Posting the same block everywhere leaves reach on the table on the platforms that need more, and reads as spam on the ones that need less.</p>
+          <div class="ev">instagram median <b>0</b> hashtags (target 3+).</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Use the per-platform caption path in the pipeline and hold each to its own length and tag rules.</p></div>
+        </div>
+      </details></div></div>
+  </section>
+  <section class="brandsec" id="brand-wgai">
+    <div class="bhead">
+      <i class="bsw" style="background:var(--s1)"></i>
+      <div class="bname"><h2>WGAI</h2><span>revenue infrastructure</span></div>
+      <div class="bgrade"><span class="bgl" style="color:var(--crit)">E</span>
+        <span class="bgn">53<em>/100</em></span></div>
+    </div>
+    <div class="btiles"><div class="btile"><span class="bk">Posts</span><span class="bv num">154</span></div><div class="btile"><span class="bk">Share of output</span><span class="bv num">17%</span></div><div class="btile"><span class="bk">Last post</span><span class="bv num">26d ago</span></div><div class="btile"><span class="bk">Measured reach</span><span class="bv num">14</span></div><div class="btile"><span class="bk">Accounts live</span><span class="bv num">5/6</span></div><div class="btile"><span class="bk">Busiest channel</span><span class="bv num">Instagram</span></div></div>
+    <div class="bsplit">
+      <div class="bpanel"><h3>Scores</h3><div class="bbars"><div class="bbar"><span class="bl">Consistency</span><span class="bt"><i style="width:36%;background:var(--crit)"></i></span><span class="bn num">36</span></div><div class="bbar"><span class="bl">Measurement</span><span class="bt"><i style="width:43%;background:var(--crit)"></i></span><span class="bn num">43</span></div><div class="bbar"><span class="bl">Performance</span><span class="bt"><i style="width:45%;background:var(--crit)"></i></span><span class="bn num">45</span></div><div class="bbar"><span class="bl">Conversion</span><span class="bt"><i style="width:91%;background:var(--ok)"></i></span><span class="bn num">91</span></div><div class="bbar"><span class="bl">Craft</span><span class="bt"><i style="width:55%;background:var(--high)"></i></span><span class="bn num">55</span></div><div class="bbar"><span class="bl">Reliability</span><span class="bt"><i style="width:59%;background:var(--high)"></i></span><span class="bn num">59</span></div></div>
+        <p class="bnote">Graded on this brand's posts alone. Focus is a cross-brand
+        measure and is excluded here.</p></div>
+      <div class="bpanel"><h3>Accounts</h3><div class="tbl-wrap"><table><thead><tr><th>Platform</th><th>Account</th><th class="n">Posts</th><th>Last post</th></tr></thead><tbody><tr><td>Facebook</td><td class="acct">WadeGlobal AI</td><td class="n">28</td><td><span class="chip chip-warn"><i class="dot"></i>30d</span></td></tr><tr><td>Instagram</td><td class="acct">wadeglobal.ai</td><td class="n">26</td><td><span class="chip chip-dead"><i class="dot"></i>52d</span></td></tr><tr><td>Twitter</td><td class="acct">WadeGlobalAI</td><td class="n">16</td><td><span class="chip chip-warn"><i class="dot"></i>30d</span></td></tr><tr><td>Threads</td><td class="acct">wadeglobal.ai</td><td class="n">12</td><td><span class="chip chip-dead"><i class="dot"></i>57d</span></td></tr><tr><td>Tiktok</td><td class="acct">wadeglobalai</td><td class="n">1</td><td><span class="chip chip-dead"><i class="dot"></i>72d</span></td></tr><tr><td>Linkedin</td><td class="acct">WadeGlobal AI</td><td class="n" colspan="2"><span class="chip chip-none">not reported per account</span></td></tr></tbody></table></div></div>
+    </div>
+    <div class="bfind"><h3>10 findings for WGAI</h3>
+      <div class="findings">
+      <details class="find" open>
+        <summary>
+          <i class="stripe st-crit"></i>
+          <span class="fid">01</span>
+          <span class="ftitle">Most of the output has never been measured<span class="metric">3 of 146 posts (2%) return any reach data</span></span>
+          <span class="sev sev-crit">Critical</span>
+        </summary>
+        <div class="fbody">
+          <p>Work that cannot be measured cannot be judged, improved or defended. Every post without a number attached is a guess about whether it was worth making.</p>
+          <div class="ev">Platforms returning no metrics at all: <b>facebook</b>, <b>instagram</b>, <b>linkedin</b>, <b>threads</b>, <b>tiktok</b>. 143 posts have no reach data.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Connect native insights for the platforms that support them, and pull reach weekly. Until a channel reports a number, treat posting to it as unpaid work.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-crit"></i>
+          <span class="fid">02</span>
+          <span class="ftitle">The posts that can be measured are not reaching anyone<span class="metric">14 impressions across 3 measured posts · 0 engagements</span></span>
+          <span class="sev sev-crit">Critical</span>
+        </summary>
+        <div class="fbody">
+          <p>This is the finding that decides whether the programme is worth continuing in its current form. Volume is not the constraint — distribution is.</p>
+          <div class="ev">Average <b>4.7</b> impressions per measured post. Engagement rate <b>0.00%</b>. Total engagements recorded: <b>0</b>.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Stop scaling output. Fix distribution first: post where the audience already is, engage from the account daily, and let reach prove itself before volume returns.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-crit"></i>
+          <span class="fid">03</span>
+          <span class="ftitle">Publishing volume has collapsed<span class="metric">3 posts in 30 days, down from 72</span></span>
+          <span class="sev sev-crit">Critical</span>
+        </summary>
+        <div class="fbody">
+          <p>Output fell 96% between the last 30 days and the 30 days before them. A cadence that stops is worse than a smaller one that holds, because every platform reads the gap as abandonment.</p>
+          <div class="ev">Last 30 days: 3 posts. Previous 30 days: 72.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Restore a floor cadence you can actually sustain and schedule it a fortnight out.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-crit"></i>
+          <span class="fid">04</span>
+          <span class="ftitle">Channels have gone dormant<span class="metric">3 of 6 brand-channels silent 31+ days</span></span>
+          <span class="sev sev-crit">Critical</span>
+        </summary>
+        <div class="fbody">
+          <p>A prospect who checks one of these profiles sees a business that appears to have stopped trading. Dormant accounts also lose the distribution they had built.</p>
+          <div class="ev">Longest silent: WGAI tiktok <b>72d</b> · WGAI threads <b>57d</b> · WGAI linkedin <b>33d</b>.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Either post to it or take the link down. A dead profile costs more than no profile.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-high"></i>
+          <span class="fid">05</span>
+          <span class="ftitle">Posts are failing silently and the causes repeat<span class="metric">8 failed posts (5.2% of all attempts)</span></span>
+          <span class="sev sev-high">High</span>
+        </summary>
+        <div class="fbody">
+          <p>The same handful of causes recur, which means nothing is reading the error messages. Each failure is a slot in the calendar that silently produced nothing.</p>
+          <div class="ev">Top causes: Threads only supports a single image or a video <b>3</b> · Could not upload media to Twitter <b>2</b> · Tiktok post failed to publish: Unsupported picture size. Check TikTok&#x27; <b>2</b> · Could not upload video to Facebook: An access token is required to req <b>1</b>. By platform: threads <b>3</b> · twitter <b>2</b> · tiktok <b>2</b> · facebook <b>1</b>.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Route the pipeline&#x27;s failure summary to a channel someone reads, and host media on permanent storage rather than temporary tunnels.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-high"></i>
+          <span class="fid">06</span>
+          <span class="ftitle">Posts are publishing with no caption at all<span class="metric">49 of 146 posts (34%) have an empty caption</span></span>
+          <span class="sev sev-high">High</span>
+        </summary>
+        <div class="fbody">
+          <p>A bare image carries no message, no keywords, no call to action and nothing for search or the ranking model to read. These posts are pure cost.</p>
+          <div class="ev">By platform: instagram <b>26</b> · facebook <b>23</b>. By brand: WGAI <b>49</b>.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Add a validation rule that refuses to schedule a post with an empty caption.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-med"></i>
+          <span class="fid">07</span>
+          <span class="ftitle">Captions are being reused verbatim<span class="metric">22 posts (15%) repeat text published elsewhere</span></span>
+          <span class="sev sev-med">Medium</span>
+        </summary>
+        <div class="fbody">
+          <p>Duplicate text across accounts is suppressed by most platforms and reads as automated to anyone who follows more than one of them.</p>
+          <div class="ev">85 distinct captions across 146 posts. Most repeated ran <b>4</b> times: &ldquo;ai does not fix a broken process. it exposes it. if intake, follow-up, and handoffs are al&hellip;&rdquo;</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Generate per-platform captions rather than joining one caption across accounts, and add a 90-day duplicate check before scheduling.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-med"></i>
+          <span class="fid">08</span>
+          <span class="ftitle">Output arrives in bursts, not a cadence<span class="metric">12 posts in one day · silent on 47 of 90 days</span></span>
+          <span class="sev sev-med">Medium</span>
+        </summary>
+        <div class="fbody">
+          <p>Batch-dumping a week of content in an afternoon suppresses reach on every platform and trains no audience habit. The same volume spread evenly performs better.</p>
+          <div class="ev">Peak day 2026-07-04: <b>12</b> posts. Median active day: <b>2</b>. Active on <b>43</b> of <b>90</b> days.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Schedule from a queue with a daily cap rather than publishing on generation day.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-med"></i>
+          <span class="fid">09</span>
+          <span class="ftitle">WGAI rarely asks for anything<span class="metric">12% of captions contain a call to action</span></span>
+          <span class="sev sev-med">Medium</span>
+        </summary>
+        <div class="fbody">
+          <p>Content that never asks builds awareness at best. A reader who is ready to act has to be told what the next step is, even softly.</p>
+          <div class="ev">4 of 34 WGAI captions contain an action verb. Contact route present in <b>4</b> of 34.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Add a standing CTA line to this brand&#x27;s caption template — one clear next step per post.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-ok"></i>
+          <span class="fid">10</span>
+          <span class="ftitle">WGAI positioning discipline is holding<span class="metric">0 violations across 34 captions</span></span>
+          <span class="sev sev-ok">Holding</span>
+        </summary>
+        <div class="fbody">
+          <p>Every caption was checked against the 11 banned terms in this brand&#x27;s doctrine and none appeared. Voice discipline is not a problem here.</p>
+          <div class="ev">Scanned 34 captions for 11 forbidden terms: <b>0</b> matches.</div>
+          <div class="fix"><span class="lbl">Keep</span><p>Carry the same enforcement into the other brands&#x27; templates.</p></div>
+        </div>
+      </details></div></div>
+  </section>
+  <section class="brandsec" id="brand-wade">
+    <div class="bhead">
+      <i class="bsw" style="background:var(--s2)"></i>
+      <div class="bname"><h2>W.A.D.E.</h2><span>leadership coaching</span></div>
+      <div class="bgrade"><span class="bgl" style="color:var(--crit)">E</span>
+        <span class="bgn">50<em>/100</em></span></div>
+    </div>
+    <div class="btiles"><div class="btile"><span class="bk">Posts</span><span class="bv num">232</span></div><div class="btile"><span class="bk">Share of output</span><span class="bv num">26%</span></div><div class="btile"><span class="bk">Last post</span><span class="bv num">26d ago</span></div><div class="btile"><span class="bk">Measured reach</span><span class="bv num">0</span></div><div class="btile"><span class="bk">Accounts live</span><span class="bv num">5/7</span></div><div class="btile"><span class="bk">Busiest channel</span><span class="bv num">Twitter</span></div></div>
+    <div class="bsplit">
+      <div class="bpanel"><h3>Scores</h3><div class="bbars"><div class="bbar"><span class="bl">Consistency</span><span class="bt"><i style="width:47%;background:var(--crit)"></i></span><span class="bn num">47</span></div><div class="bbar"><span class="bl">Measurement</span><span class="bt"><i style="width:40%;background:var(--crit)"></i></span><span class="bn num">40</span></div><div class="bbar"><span class="bl">Performance</span><span class="bt"><i style="width:0%;background:var(--crit)"></i></span><span class="bn num">0</span></div><div class="bbar"><span class="bl">Conversion</span><span class="bt"><i style="width:93%;background:var(--ok)"></i></span><span class="bn num">93</span></div><div class="bbar"><span class="bl">Craft</span><span class="bt"><i style="width:49%;background:var(--crit)"></i></span><span class="bn num">49</span></div><div class="bbar"><span class="bl">Reliability</span><span class="bt"><i style="width:100%;background:var(--ok)"></i></span><span class="bn num">100</span></div></div>
+        <p class="bnote">Graded on this brand's posts alone. Focus is a cross-brand
+        measure and is excluded here.</p></div>
+      <div class="bpanel"><h3>Accounts</h3><div class="tbl-wrap"><table><thead><tr><th>Platform</th><th>Account</th><th class="n">Posts</th><th>Last post</th></tr></thead><tbody><tr><td>Twitter</td><td class="acct">EnoughWishing</td><td class="n">59</td><td><span class="chip chip-warn"><i class="dot"></i>26d</span></td></tr><tr><td>Facebook</td><td class="acct">William Wade Jr - Wishing Ain&#x27;t Doing Enough</td><td class="n">51</td><td><span class="chip chip-warn"><i class="dot"></i>26d</span></td></tr><tr><td>Threads</td><td class="acct">wishingaintdoingenough</td><td class="n">49</td><td><span class="chip chip-warn"><i class="dot"></i>26d</span></td></tr><tr><td>Instagram</td><td class="acct">wishingaintdoingenough</td><td class="n">23</td><td><span class="chip chip-dead"><i class="dot"></i>36d</span></td></tr><tr><td>Tiktok</td><td class="acct">wademindset</td><td class="n">17</td><td><span class="chip chip-dead"><i class="dot"></i>41d</span></td></tr><tr><td>Linkedin</td><td class="acct">Wishing Ain&#x27;t Doing Enough (W.A.D.E.)</td><td class="n" colspan="2"><span class="chip chip-none">not reported per account</span></td></tr><tr><td>Youtube</td><td class="acct">William WADE Jr</td><td class="n">0</td><td><span class="chip chip-none">—</span></td></tr></tbody></table></div></div>
+    </div>
+    <div class="bfind"><h3>7 findings for W.A.D.E.</h3>
+      <div class="findings">
+      <details class="find" open>
+        <summary>
+          <i class="stripe st-crit"></i>
+          <span class="fid">01</span>
+          <span class="ftitle">Most of the output has never been measured<span class="metric">0 of 229 posts (0%) return any reach data</span></span>
+          <span class="sev sev-crit">Critical</span>
+        </summary>
+        <div class="fbody">
+          <p>Work that cannot be measured cannot be judged, improved or defended. Every post without a number attached is a guess about whether it was worth making.</p>
+          <div class="ev">Platforms returning no metrics at all: <b>facebook</b>, <b>instagram</b>, <b>linkedin</b>, <b>threads</b>, <b>tiktok</b>, <b>twitter</b>.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Connect native insights for the platforms that support them, and pull reach weekly. Until a channel reports a number, treat posting to it as unpaid work.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-crit"></i>
+          <span class="fid">02</span>
+          <span class="ftitle">Publishing volume has collapsed<span class="metric">18 posts in 30 days, down from 97</span></span>
+          <span class="sev sev-crit">Critical</span>
+        </summary>
+        <div class="fbody">
+          <p>Output fell 81% between the last 30 days and the 30 days before them. A cadence that stops is worse than a smaller one that holds, because every platform reads the gap as abandonment.</p>
+          <div class="ev">Last 30 days: 18 posts. Previous 30 days: 97.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Restore a floor cadence you can actually sustain and schedule it a fortnight out.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-crit"></i>
+          <span class="fid">03</span>
+          <span class="ftitle">Channels have gone dormant<span class="metric">3 of 6 brand-channels silent 31+ days</span></span>
+          <span class="sev sev-crit">Critical</span>
+        </summary>
+        <div class="fbody">
+          <p>A prospect who checks one of these profiles sees a business that appears to have stopped trading. Dormant accounts also lose the distribution they had built.</p>
+          <div class="ev">Longest silent: WADE linkedin <b>54d</b> · WADE tiktok <b>41d</b> · WADE instagram <b>36d</b>.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Either post to it or take the link down. A dead profile costs more than no profile.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-high"></i>
+          <span class="fid">04</span>
+          <span class="ftitle">Posts are publishing with no caption at all<span class="metric">31 of 229 posts (14%) have an empty caption</span></span>
+          <span class="sev sev-high">High</span>
+        </summary>
+        <div class="fbody">
+          <p>A bare image carries no message, no keywords, no call to action and nothing for search or the ranking model to read. These posts are pure cost.</p>
+          <div class="ev">By platform: instagram <b>17</b> · facebook <b>14</b>. By brand: WADE <b>31</b>.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Add a validation rule that refuses to schedule a post with an empty caption.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-high"></i>
+          <span class="fid">05</span>
+          <span class="ftitle">Captions are being reused verbatim<span class="metric">59 posts (26%) repeat text published elsewhere</span></span>
+          <span class="sev sev-high">High</span>
+        </summary>
+        <div class="fbody">
+          <p>Duplicate text across accounts is suppressed by most platforms and reads as automated to anyone who follows more than one of them.</p>
+          <div class="ev">165 distinct captions across 229 posts. Most repeated ran <b>6</b> times: &ldquo;job completion is not a feeling. it is your name on the work. your standard in the result.&hellip;&rdquo;</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Generate per-platform captions rather than joining one caption across accounts, and add a 90-day duplicate check before scheduling.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-med"></i>
+          <span class="fid">06</span>
+          <span class="ftitle">W.A.D.E. rarely asks for anything<span class="metric">18% of captions contain a call to action · 54% carry a contact route</span></span>
+          <span class="sev sev-med">Medium</span>
+        </summary>
+        <div class="fbody">
+          <p>Content that never asks builds awareness at best. A reader who is ready to act has to be told what the next step is, even softly.</p>
+          <div class="ev">31 of 168 W.A.D.E. captions contain an action verb. Contact route present in <b>91</b> of 168.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Add a standing CTA line to this brand&#x27;s caption template — one clear next step per post.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-med"></i>
+          <span class="fid">07</span>
+          <span class="ftitle">Connected accounts are publishing nothing at all<span class="metric">1 of 7 connected accounts posted zero times</span></span>
+          <span class="sev sev-med">Medium</span>
+        </summary>
+        <div class="fbody">
+          <p>These accounts are wired into the publishing stack but received no content in this window. Each is a channel already paid for in setup effort and sitting idle.</p>
+          <div class="ev">Idle: WADE <b>William WADE Jr</b> (youtube).</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Either include them in the schedule or disconnect them so the roster reflects reality.</p></div>
+        </div>
+      </details></div></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Findings</h2>
+      <p class="lede">Generated from the data, ranked by severity. Click any finding for the evidence and the fix.</p></div>
+    <div class="findings">
+      <details class="find" open>
+        <summary>
+          <i class="stripe st-crit"></i>
+          <span class="fid">01</span>
+          <span class="ftitle">Most of the output has never been measured<span class="metric">7 of 894 posts (1%) return any reach data</span></span>
+          <span class="sev sev-crit">Critical</span>
+        </summary>
+        <div class="fbody">
+          <p>Work that cannot be measured cannot be judged, improved or defended. Every post without a number attached is a guess about whether it was worth making.</p>
+          <div class="ev">Platforms returning no metrics at all: <b>facebook</b>, <b>instagram</b>, <b>linkedin</b>, <b>threads</b>, <b>tiktok</b>. 887 posts have no reach data.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Connect native insights for the platforms that support them, and pull reach weekly. Until a channel reports a number, treat posting to it as unpaid work.</p></div>
+        </div>
+      </details>
+      <details class="find" open>
+        <summary>
+          <i class="stripe st-crit"></i>
+          <span class="fid">02</span>
+          <span class="ftitle">The posts that can be measured are not reaching anyone<span class="metric">18 impressions across 7 measured posts · 0 engagements</span></span>
+          <span class="sev sev-crit">Critical</span>
+        </summary>
+        <div class="fbody">
+          <p>This is the finding that decides whether the programme is worth continuing in its current form. Volume is not the constraint — distribution is.</p>
+          <div class="ev">Average <b>2.6</b> impressions per measured post. Engagement rate <b>0.00%</b>. Total engagements recorded: <b>0</b>.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Stop scaling output. Fix distribution first: post where the audience already is, engage from the account daily, and let reach prove itself before volume returns.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-crit"></i>
+          <span class="fid">03</span>
+          <span class="ftitle">Publishing volume has collapsed<span class="metric">41 posts in 30 days, down from 358</span></span>
+          <span class="sev sev-crit">Critical</span>
+        </summary>
+        <div class="fbody">
+          <p>Output fell 89% between the last 30 days and the 30 days before them. A cadence that stops is worse than a smaller one that holds, because every platform reads the gap as abandonment.</p>
+          <div class="ev">Last 30 days: 41 posts. Previous 30 days: 358.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Restore a floor cadence you can actually sustain and schedule it a fortnight out.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-crit"></i>
+          <span class="fid">04</span>
+          <span class="ftitle">The highest-priority brand gets the least output<span class="metric">WGAI: 16% of posts, vs 54% for ACS</span></span>
+          <span class="sev sev-crit">Critical</span>
+        </summary>
+        <div class="fbody">
+          <p>Effort is not tracking the revenue plan. The brand with the largest target and the longest sales cycle is receiving the smallest share of the work.</p>
+          <div class="ev">Share of output: WGAI <b>16%</b> · ACS <b>54%</b> · W.A.D.E. <b>26%</b>.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Invert the ratio to match the targets — a larger share of a smaller total, concentrated on the channels that brand&#x27;s buyers actually use.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-crit"></i>
+          <span class="fid">05</span>
+          <span class="ftitle">Channels have gone dormant<span class="metric">13 of 21 brand-channels silent 31+ days</span></span>
+          <span class="sev sev-crit">Critical</span>
+        </summary>
+        <div class="fbody">
+          <p>A prospect who checks one of these profiles sees a business that appears to have stopped trading. Dormant accounts also lose the distribution they had built.</p>
+          <div class="ev">Longest silent: WGAI tiktok <b>72d</b> · WGAI threads <b>57d</b> · WADE linkedin <b>54d</b> · ACS facebook <b>52d</b>.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Either post to it or take the link down. A dead profile costs more than no profile.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-high"></i>
+          <span class="fid">06</span>
+          <span class="ftitle">Posts are publishing with no caption at all<span class="metric">99 of 894 posts (11%) have an empty caption</span></span>
+          <span class="sev sev-high">High</span>
+        </summary>
+        <div class="fbody">
+          <p>A bare image carries no message, no keywords, no call to action and nothing for search or the ranking model to read. These posts are pure cost.</p>
+          <div class="ev">By platform: instagram <b>52</b> · facebook <b>47</b>. By brand: WGAI <b>49</b> · WADE <b>31</b> · ACS <b>18</b> · Unattributed <b>1</b>.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Add a validation rule that refuses to schedule a post with an empty caption.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-high"></i>
+          <span class="fid">07</span>
+          <span class="ftitle">ACS asks for the business without saying how to get it<span class="metric">81% carry a call to action · 7% carry a way to respond</span></span>
+          <span class="sev sev-high">High</span>
+        </summary>
+        <div class="fbody">
+          <p>Of 398 captions, 321 tell the reader to take an action but only 28 give them a route to do it. This is the cheapest fix available — a template change, not a strategy change.</p>
+          <div class="ev">Across 398 ACS captions: phone in <b>1</b> · website in <b>1</b> · email in <b>27</b>.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Append the phone, site or booking link to the caption template and enforce it in the generator so a post cannot ship without one.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-high"></i>
+          <span class="fid">08</span>
+          <span class="ftitle">Posts are failing silently and the causes repeat<span class="metric">25 failed posts (2.7% of all attempts)</span></span>
+          <span class="sev sev-high">High</span>
+        </summary>
+        <div class="fbody">
+          <p>The same handful of causes recur, which means nothing is reading the error messages. Each failure is a slot in the calendar that silently produced nothing.</p>
+          <div class="ev">Top causes: Threads only supports a single image or a video <b>4</b> · Failed to fetch media URL: char &#x27;e&#x27; is not expected.:1:1
+  Deserializa <b>3</b> · Tiktok post failed to publish: Unsupported picture size. Check TikTok&#x27; <b>3</b> · Uploading a story to Facebook timed out <b>2</b>. By platform: facebook <b>8</b> · threads <b>7</b> · tiktok <b>3</b> · linkedin <b>2</b>.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Route the pipeline&#x27;s failure summary to a channel someone reads, and host media on permanent storage rather than temporary tunnels.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-high"></i>
+          <span class="fid">09</span>
+          <span class="ftitle">The heaviest channel is the weakest one<span class="metric">262 posts (29%) to twitter, averaging 2.6 impressions</span></span>
+          <span class="sev sev-high">High</span>
+        </summary>
+        <div class="fbody">
+          <p>More than a fifth of all output goes to the one channel proven in this data to reach almost nobody, while channels with real upside are under-fed.</p>
+          <div class="ev">Volume by platform: twitter <b>262</b> · threads <b>193</b> · facebook <b>167</b> · instagram <b>141</b> · linkedin <b>106</b> · tiktok <b>25</b>.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Demote twitter to a mirror of what already exists elsewhere and move that effort to the channels with the most headroom.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-med"></i>
+          <span class="fid">10</span>
+          <span class="ftitle">Captions are being reused verbatim<span class="metric">170 posts (19%) repeat text published elsewhere</span></span>
+          <span class="sev sev-med">Medium</span>
+        </summary>
+        <div class="fbody">
+          <p>Duplicate text across accounts is suppressed by most platforms and reads as automated to anyone who follows more than one of them.</p>
+          <div class="ev">683 distinct captions across 894 posts. Most repeated ran <b>27</b> times: &ldquo;commercial cleaning built on nashville trust. book an acs walkthrough: info@ascentcleaning&hellip;&rdquo;</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Generate per-platform captions rather than joining one caption across accounts, and add a 90-day duplicate check before scheduling.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-med"></i>
+          <span class="fid">11</span>
+          <span class="ftitle">Output arrives in bursts, not a cadence<span class="metric">63 posts in one day · silent on 27 of 90 days</span></span>
+          <span class="sev sev-med">Medium</span>
+        </summary>
+        <div class="fbody">
+          <p>Batch-dumping a week of content in an afternoon suppresses reach on every platform and trains no audience habit. The same volume spread evenly performs better.</p>
+          <div class="ev">Peak day 2026-07-07: <b>63</b> posts. Median active day: <b>6</b>. Active on <b>63</b> of <b>90</b> days.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Schedule from a queue with a daily cap rather than publishing on generation day.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-med"></i>
+          <span class="fid">12</span>
+          <span class="ftitle">WGAI rarely asks for anything<span class="metric">12% of captions contain a call to action</span></span>
+          <span class="sev sev-med">Medium</span>
+        </summary>
+        <div class="fbody">
+          <p>Content that never asks builds awareness at best. A reader who is ready to act has to be told what the next step is, even softly.</p>
+          <div class="ev">4 of 34 WGAI captions contain an action verb. Contact route present in <b>4</b> of 34.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Add a standing CTA line to this brand&#x27;s caption template — one clear next step per post.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-med"></i>
+          <span class="fid">13</span>
+          <span class="ftitle">W.A.D.E. rarely asks for anything<span class="metric">18% of captions contain a call to action · 54% carry a contact route</span></span>
+          <span class="sev sev-med">Medium</span>
+        </summary>
+        <div class="fbody">
+          <p>Content that never asks builds awareness at best. A reader who is ready to act has to be told what the next step is, even softly.</p>
+          <div class="ev">31 of 168 W.A.D.E. captions contain an action verb. Contact route present in <b>91</b> of 168.</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Add a standing CTA line to this brand&#x27;s caption template — one clear next step per post.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-med"></i>
+          <span class="fid">14</span>
+          <span class="ftitle">Connected accounts are publishing nothing at all<span class="metric">1 of 20 connected accounts posted zero times</span></span>
+          <span class="sev sev-med">Medium</span>
+        </summary>
+        <div class="fbody">
+          <p>These accounts are wired into the publishing stack but received no content in this window. Each is a channel already paid for in setup effort and sitting idle.</p>
+          <div class="ev">Idle: WADE <b>William WADE Jr</b> (youtube).</div>
+          <div class="fix"><span class="lbl">Fix</span><p>Either include them in the schedule or disconnect them so the roster reflects reality.</p></div>
+        </div>
+      </details>
+      <details class="find">
+        <summary>
+          <i class="stripe st-ok"></i>
+          <span class="fid">15</span>
+          <span class="ftitle">WGAI positioning discipline is holding<span class="metric">0 violations across 34 captions</span></span>
+          <span class="sev sev-ok">Holding</span>
+        </summary>
+        <div class="fbody">
+          <p>Every caption was checked against the 11 banned terms in this brand&#x27;s doctrine and none appeared. Voice discipline is not a problem here.</p>
+          <div class="ev">Scanned 34 captions for 11 forbidden terms: <b>0</b> matches.</div>
+          <div class="fix"><span class="lbl">Keep</span><p>Carry the same enforcement into the other brands&#x27; templates.</p></div>
+        </div>
+      </details></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>The next 30 days</h2>
+      <p class="lede">Built from the findings that actually tripped in this run — each step exists because something above failed.</p></div>
+    <div class="plan"><div class="step"><span class="wk">Days 1–3</span><span class="what"><b>Refill the queue</b><em>Two weeks of posts scheduled per brand at a cadence that can actually hold. A smaller number that never stops beats a large number that does.</em></span><span class="who">Chloe</span></div><div class="step"><span class="wk">Days 1–3</span><span class="what"><b>Add the blocking rules</b><em>The pipeline refuses any post with an empty caption, and any post from a brand with configured contact details that omits them.</em></span><span class="who">Jade</span></div><div class="step"><span class="wk">Days 4–7</span><span class="what"><b>Turn measurement on</b><em>Connect native insights for every platform that supports them and pull reach weekly. Route failure summaries to a channel someone reads.</em></span><span class="who">Jade</span></div><div class="step"><span class="wk">Week 2</span><span class="what"><b>Rebalance to the targets</b><em>Cut total volume and shift share toward the highest-priority brand, concentrated on the channels its buyers use.</em></span><span class="who">Chloe</span></div><div class="step"><span class="wk">Week 3</span><span class="what"><b>Work distribution, not volume</b><em>Reuse the media already produced on the formats with headroom, and engage daily from the account rather than only broadcasting.</em></span><span class="who">Chloe</span></div><div class="step"><span class="wk">Week 4</span><span class="what"><b>Report on outcomes, not posts</b><em>One page: reach by channel, profile visits, and calls or walkthroughs booked with social as the source in the CRM. Re-run this audit and compare the score.</em></span><span class="who">Wade</span></div></div>
+  </section>
+
+  <div class="method">
+    <h3>Method &amp; limits</h3>
+    <p>Generated by <b>tools/social_media_audit.py</b> in <b>snapshot</b> mode from the Blotato
+    publishing record for every connected account, covering <b>02 Jun 2026 – 31 Aug 2026</b>
+    (919 records: 894 published, 25 failed).</p>
+    <p><b>Reach data is only as complete as the platforms allow.</b>
+    7 of 894 posts returned metrics. Any platform absent from the
+    measured set reports nothing back through the current plan, so no claim is made about its actual
+    reach — the absence of that data is itself a finding.</p>
+    <p><b>Brand attribution is exact where the platform exposes the account</b> — handles in post URLs
+    and page IDs in Facebook URLs. Where the URL carries no account identifier, attribution falls back
+    to caption vocabulary: <b>162</b> posts were attributed that way and
+    <b>34</b> could not be classified at all. Per-brand splits on those
+    platforms are close estimates, not exact counts.</p>
+    <p>Thresholds that decide severity live in <b>social_audit_config.json</b> and can be tuned per
+    organisation without touching the tool.</p>
+  </div>
+</div>
